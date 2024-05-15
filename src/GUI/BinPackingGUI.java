@@ -24,7 +24,8 @@ public class BinPackingGUI extends JFrame {
         setLayout(new BorderLayout());
         setResizable(true);
 
-        DataSet dataSet = DataSetLoader.loadDataSet("C:/Polytech_ingenieur/OptDiscrete/binpacking2d-01.bp2d");
+        // DataSet dataSet = DataSetLoader.loadDataSet("C:/Polytech_ingenieur/OptDiscrete/binpacking2d-01.bp2d");
+        DataSet dataSet = DataSetLoader.loadDataSet("E:/Polytech/4A/OptDiscrete/binpacking2d-01.bp2d");
         ItemPanel itemPanel = new ItemPanel(dataSet.getItems());
         ControlPanel controlPanel = new ControlPanel(this, itemPanel);
 

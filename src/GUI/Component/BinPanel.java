@@ -55,4 +55,9 @@ public class BinPanel extends JPanel {
     public void setBins(List<Bin> bins) {
         this.bins = bins;
     }
+
+    public void updateBins(List<Bin> bins) {
+        this.bins = bins;
+        repaint();
+    }
 }

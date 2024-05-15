@@ -23,7 +23,7 @@ public class ControlPanel extends JPanel {
         setLayout(new FlowLayout());
 
         dataSetComboBox = new JComboBox<>(new String[]{"binpacking2d-01", "binpacking2d-02", "binpacking2d-03"});
-        metaheuristicComboBox = new JComboBox<>(new String[]{"FFF", "GRASP", "Tabu Search"});
+        metaheuristicComboBox = new JComboBox<>(new String[]{"GRASP", "FFF", "Tabu Search"});
         JButton solveButton = new JButton("Solve");
         solveButton.setBackground(new Color(0, 150, 136));
         solveButton.setForeground(Color.WHITE);
@@ -47,7 +47,8 @@ public class ControlPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String dataSetName = (String) dataSetComboBox.getSelectedItem();
-                String dataSetPath = "C:/Polytech_ingenieur/OptDiscrete/" + dataSetName + ".bp2d";
+//                String dataSetPath = "C:/Polytech_ingenieur/OptDiscrete/" + dataSetName + ".bp2d";
+                String dataSetPath = "E:/Polytech/4A/OptDiscrete/" + dataSetName + ".bp2d";
                 DataSet dataSet = DataSetLoader.loadDataSet(dataSetPath);
                 itemPanel.setItems(dataSet.getItems());
                 //binPanel.clearBins

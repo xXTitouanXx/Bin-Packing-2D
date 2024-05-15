@@ -13,7 +13,8 @@ public class Solver {
 
     public void solve(String dataSetName, String metaheuristicName) {
         // Load dataset
-        String dataSetPath = "C:/Polytech_ingenieur/OptDiscrete/" + dataSetName + ".bp2d";
+        //String dataSetPath = "C:/Polytech_ingenieur/OptDiscrete/" + dataSetName + ".bp2d";
+        String dataSetPath = "E:/Polytech/4A/OptDiscrete/" + dataSetName + ".bp2d";
         DataSet dataSet = DataSetLoader.loadDataSet(dataSetPath);
 
         if (dataSet != null) {

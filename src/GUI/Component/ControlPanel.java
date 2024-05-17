@@ -22,7 +22,13 @@ public class ControlPanel extends JPanel {
         setBackground(new Color(63, 81, 181));
         setLayout(new FlowLayout());
 
-        dataSetComboBox = new JComboBox<>(new String[]{"binpacking2d-01", "binpacking2d-02", "binpacking2d-03"});
+        dataSetComboBox = new JComboBox<>(new String[]{
+                "binpacking2d-01", "binpacking2d-02", "binpacking2d-03",
+                "binpacking2d-04", "binpacking2d-05", "binpacking2d-06",
+                "binpacking2d-07", "binpacking2d-08", "binpacking2d-09",
+                "binpacking2d-10", "binpacking2d-11", "binpacking2d-12",
+                "binpacking2d-13"
+        });
         metaheuristicComboBox = new JComboBox<>(new String[]{"Test", "GRASP", "FFF", "Tabu Search"});
         JButton solveButton = new JButton("Solve");
         solveButton.setBackground(new Color(0, 150, 136));

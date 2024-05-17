@@ -71,7 +71,7 @@ public class FFF implements Metaheuristic {
         Random random = new Random();
 
         List<Item> shuffledItems = new ArrayList<>(items);
-        Collections.shuffle(shuffledItems, random);
+        //Collections.shuffle(shuffledItems, random);
         for (Item item : shuffledItems) {
             System.out.println("ordre : " + item.getId());
         }

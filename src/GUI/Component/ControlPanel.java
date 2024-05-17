@@ -23,11 +23,10 @@ public class ControlPanel extends JPanel {
         setLayout(new FlowLayout());
 
         dataSetComboBox = new JComboBox<>(new String[]{"binpacking2d-01", "binpacking2d-02", "binpacking2d-03"});
-        metaheuristicComboBox = new JComboBox<>(new String[]{"GRASP", "FFF", "Tabu Search"});
+        metaheuristicComboBox = new JComboBox<>(new String[]{"Test", "GRASP", "FFF", "Tabu Search"});
         JButton solveButton = new JButton("Solve");
         solveButton.setBackground(new Color(0, 150, 136));
         solveButton.setForeground(Color.WHITE);
-
         add(new JLabel("Select Model.DataSet:"));
         add(dataSetComboBox);
         add(new JLabel("Select Algorithms.Metaheuristic:"));
@@ -40,6 +39,8 @@ public class ControlPanel extends JPanel {
                 String dataSetName = (String) dataSetComboBox.getSelectedItem();
                 String metaheuristicName = (String) metaheuristicComboBox.getSelectedItem();
                 itemPanel.clearItems();
+                revalidate();
+                repaint();
                 parent.solveBinPacking2D(dataSetName, metaheuristicName);
             }
         });
@@ -51,9 +52,16 @@ public class ControlPanel extends JPanel {
                 String dataSetPath = "E:/Polytech/4A/OptDiscrete/" + dataSetName + ".bp2d";
                 DataSet dataSet = DataSetLoader.loadDataSet(dataSetPath);
                 itemPanel.setItems(dataSet.getItems());
-                //binPanel.clearBins
                 itemPanel.repaint();
             }
         });
+    }
+
+    public JComboBox<String> getDataSetComboBox() {
+        return dataSetComboBox;
+    }
+
+    public void setDataSetComboBox(JComboBox<String> dataSetComboBox) {
+        this.dataSetComboBox = dataSetComboBox;
     }
 }

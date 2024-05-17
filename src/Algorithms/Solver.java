@@ -22,8 +22,8 @@ public class Solver {
             System.out.println("Loaded dataset: " + dataSet.getName());
             System.out.println("Comment: " + dataSet.getComment());
             System.out.println("Number of items: " + dataSet.getNbItems());
-            System.out.println("Model.Bin width: " + dataSet.getBinWidth());
-            System.out.println("Model.Bin height: " + dataSet.getBinHeight());
+            System.out.println("Bin width: " + dataSet.getBinWidth());
+            System.out.println("Bin height: " + dataSet.getBinHeight());
 
             // Solve bin packing with selected metaheuristic
             Metaheuristic metaheuristic = getMetaheuristic(metaheuristicName);
@@ -39,10 +39,10 @@ public class Solver {
 
     private Metaheuristic getMetaheuristic(String metaheuristicName) {
         switch (metaheuristicName.toLowerCase()) {
-            case "grasp":
-                return new GRASP(binPanel);
-//            case "fff":
-//                return new FFF(draw);
+            case "test":
+                return new Test(binPanel);
+            case "fff":
+                return new FFF(binPanel);
 //            case "tabu search":
 //                return new TabuSearch();
             default:

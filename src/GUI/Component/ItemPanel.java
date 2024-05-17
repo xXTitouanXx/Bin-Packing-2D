@@ -23,7 +23,7 @@ public class ItemPanel extends JPanel {
             drawItem(g, item, x, y);
             if (x + item.getWidth() < getParent().getSize().width) {
                 yMax = Math.max(yMax, item.getHeight());
-                System.out.println("Valeur ymax : " + yMax);
+                //System.out.println("Valeur ymax : " + yMax);
                 x += item.getWidth() + 5;
             } else {
                 x = 5;

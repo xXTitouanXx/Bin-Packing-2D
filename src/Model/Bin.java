@@ -54,11 +54,25 @@ public class Bin {
 
     public boolean canFit(Item item, int x, int y) {
         if (x + item.getWidth() > getWidth() || y + item.getHeight() > getHeight()) {
+            //System.out.println("item x : " + x + ", y :" + y + ", x+ width : " + (x + item.getWidth()) + ", y+height :" + (y + item.getHeight()) + ", value : " + (x + item.getWidth() > getWidth() || y + item.getHeight() > getHeight()));
             return false;
         }
         for (int i = x; i < x + item.getWidth(); i++) {
             for (int j = y; j < y + item.getHeight(); j++) {
                 if (isPixelUsed(i, j)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean findPositionForItem(Item item) {
+        for (int x = 0; x < getWidth(); x++) {
+            for (int y = 0; y < getHeight(); y++) {
+                if (canFit(item, x, y)) {
+                    item.setX(x);
+                    item.setY(y);
                     return true;
                 }
             }
@@ -72,7 +86,7 @@ public class Bin {
             return grid[x][y];
         } else {
             // System.out.println("Coordonnées de pixel non valides");
-            return false; // Ou une autre valeur par défaut selon le contexte
+            return true; // Ou une autre valeur par défaut selon le contexte
         }
     }
 

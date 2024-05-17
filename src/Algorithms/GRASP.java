@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class GRASP implements Metaheuristic {
-    private BinPanel binPanel;
+ /*public class GRASP implements Metaheuristic {
+   private BinPanel binPanel;
 
     public GRASP(BinPanel binPanel) {
         this.binPanel = binPanel;
@@ -75,5 +75,5 @@ public class GRASP implements Metaheuristic {
     private int calculateFitness(List<Bin> solution) {
         return solution.size();
     }
-}
+}*/
 

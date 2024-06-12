@@ -1,32 +1,15 @@
-package Algorithms;
+package Algorithms.Heuristic;
 
+import Algorithms.Metaheuristic.Metaheuristic;
 import GUI.Component.BinPanel;
 import Model.DataSet;
 import Model.Item;
 import Model.Bin;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
-public class FFF implements Metaheuristic {
-    private BinPanel binPanel;
-
-    public FFF(BinPanel binPanel) {
-        this.binPanel = binPanel;
-    }
-
-    @Override
-    public void solveBinPacking2D(DataSet dataSet) {
-        List<Item> items = dataSet.getItems();
-        int binWidth = dataSet.getBinWidth() /*/ 10*/;
-        int binHeight = dataSet.getBinHeight() /*/ 10*/;
-        binPanel.setBins(FFF(items, binWidth, binHeight));
-        binPanel.repaint();
-        System.out.println("Nombre de bins : " + FFF(items, binWidth, binHeight).size());
-        System.out.println("FFF algorithm finished.");
-    }
+public class FirstFitFirst {
 
     //    private List<Bin> FFF(List<Item> items, int binWidth, int binHeight) {
 //        List<Bin> bins = new ArrayList<>();
@@ -66,18 +49,15 @@ public class FFF implements Metaheuristic {
 //        }
 //        return bins;
 //    }
-    private List<Bin> FFF(List<Item> items, int binWidth, int binHeight) {
+    public List<Bin> FFF(List<Item> items, int binWidth, int binHeight) {
         List<Bin> bins = new ArrayList<>();
-        Random random = new Random();
 
-        List<Item> shuffledItems = new ArrayList<>(items);
-        //Collections.shuffle(shuffledItems, random);
-        for (Item item : shuffledItems) {
+        for (Item item : items) {
             System.out.println("ordre : " + item.getId());
         }
         Bin currentBin = new Bin(binWidth, binHeight);
         bins.add(currentBin);
-        for (Item item : shuffledItems) {
+        for (Item item : items) {
             System.out.println("ordre inté for : " + item.getId());
             boolean placed = false;
             System.out.println("Find position : " + currentBin.findPositionForItem(item));

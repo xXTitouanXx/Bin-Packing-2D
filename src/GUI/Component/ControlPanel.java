@@ -29,13 +29,13 @@ public class ControlPanel extends JPanel {
                 "binpacking2d-10", "binpacking2d-11", "binpacking2d-12",
                 "binpacking2d-13"
         });
-        metaheuristicComboBox = new JComboBox<>(new String[]{"Test", "GRASP", "FFF", "Tabu Search"});
+        metaheuristicComboBox = new JComboBox<>(new String[]{"Tabu search", "GRASP", "FFF", "Tabu Search"});
         JButton solveButton = new JButton("Solve");
         solveButton.setBackground(new Color(0, 150, 136));
         solveButton.setForeground(Color.WHITE);
         add(new JLabel("Select Model.DataSet:"));
         add(dataSetComboBox);
-        add(new JLabel("Select Algorithms.Metaheuristic:"));
+        add(new JLabel("Select Algorithms.Metaheuristic.Metaheuristic:"));
         add(metaheuristicComboBox);
         add(solveButton);
 

@@ -44,12 +44,35 @@ public class Bin {
     }
 
     public void addItem(Item item) {
-        for (int x = item.getX(); x < item.getX() + item.getWidth(); x++) {
-            for (int y = item.getY(); y < item.getY() + item.getHeight(); y++) {
-                setPixelUsed(x, y);
+        if (!items.contains(item)) {
+            for (int x = item.getX(); x < item.getX() + item.getWidth(); x++) {
+                for (int y = item.getY(); y < item.getY() + item.getHeight(); y++) {
+                    setPixelUsed(x, y);
+                }
             }
+            items.add(item);
         }
-        items.add(item);
+    }
+
+    public void removeItem(Item item) {
+        if (items.remove(item)) {
+            for (int x = item.getX(); x < item.getX() + item.getWidth(); x++) {
+                for (int y = item.getY(); y < item.getY() + item.getHeight(); y++) {
+                    setPixelUnused(x, y);
+                }
+            }
+            items.remove(item);
+        } else {
+            System.out.println("Item non trouvé dans ce bin.");
+        }
+    }
+
+    public boolean tryAddItem(Item item) {
+        if (canFit(item, item.getX(), item.getY())) {
+            addItem(item);
+            return true;
+        }
+        return false;
     }
 
     public boolean canFit(Item item, int x, int y) {
@@ -87,6 +110,14 @@ public class Bin {
         } else {
             // System.out.println("Coordonnées de pixel non valides");
             return true; // Ou une autre valeur par défaut selon le contexte
+        }
+    }
+
+    public void setPixelUnused(int x, int y) {
+        if (x >= 0 && x < grid.length && y >= 0 && y < grid[0].length) {
+            grid[x][y] = false;
+        } else {
+            //System.out.println("Coordonnées de pixel non valides");
         }
     }
 

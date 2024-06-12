@@ -1,5 +1,8 @@
 package Algorithms;
 
+import Algorithms.Heuristic.FirstFitFirst;
+import Algorithms.Metaheuristic.Metaheuristic;
+import Algorithms.Metaheuristic.TabuSearch.Driver;
 import GUI.Component.BinPanel;
 import Model.DataSet;
 import Util.DataSetLoader;
@@ -41,8 +44,8 @@ public class Solver {
         switch (metaheuristicName.toLowerCase()) {
             case "test":
                 return new Test(binPanel);
-            case "fff":
-                return new FFF(binPanel);
+            case "tabu search":
+                return new Driver(binPanel);
 //            case "tabu search":
 //                return new TabuSearch();
             default:

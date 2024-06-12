@@ -1,5 +1,6 @@
 package Algorithms;
 
+import Algorithms.Metaheuristic.Metaheuristic;
 import GUI.Component.BinPanel;
 import Model.Bin;
 import Model.DataSet;

@@ -22,6 +22,15 @@ public class Item {
         color = new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
     }
 
+    public Item(Item other) {
+        this.id = other.id;
+        this.x = other.x;
+        this.y = other.y;
+        this.width = other.width;
+        this.height = other.height;
+        this.color = other.color;
+        this.rotated = other.rotated;
+    }
     // Getters et Setters
 
     public int getId() {

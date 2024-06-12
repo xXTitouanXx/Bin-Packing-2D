@@ -1,8 +1,8 @@
 package Algorithms;
 
-import Algorithms.Heuristic.FirstFitFirst;
+import Algorithms.Metaheuristic.GeneticAlgorithm.DriverGenetic;
 import Algorithms.Metaheuristic.Metaheuristic;
-import Algorithms.Metaheuristic.TabuSearch.Driver;
+import Algorithms.Metaheuristic.TabuSearch.DriverTabu;
 import GUI.Component.BinPanel;
 import Model.DataSet;
 import Util.DataSetLoader;
@@ -45,9 +45,9 @@ public class Solver {
             case "test":
                 return new Test(binPanel);
             case "tabu search":
-                return new Driver(binPanel);
-//            case "tabu search":
-//                return new TabuSearch();
+                return new DriverTabu(binPanel);
+            case "genetic algorithm":
+                return new DriverGenetic(binPanel);
             default:
                 return null;
         }

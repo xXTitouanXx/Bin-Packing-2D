@@ -9,10 +9,10 @@ import Model.Item;
 
 import java.util.*;
 
-public class Driver implements Metaheuristic {
+public class DriverTabu implements Metaheuristic {
     private BinPanel binPanel;
 
-    public Driver(BinPanel binPanel) {
+    public DriverTabu(BinPanel binPanel) {
         this.binPanel = binPanel;
     }
 

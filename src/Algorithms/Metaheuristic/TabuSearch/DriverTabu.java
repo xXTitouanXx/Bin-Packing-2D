@@ -23,7 +23,7 @@ public class DriverTabu implements Metaheuristic {
         int binHeight = dataSet.getBinHeight() /*/ 10*/;
         binPanel.setBins(tabuSearch(items, binWidth, binHeight));
         binPanel.repaint();
-        System.out.println("Tabu search algorithm finished.");
+//        System.out.println("Tabu search algorithm finished.");
     }
 
     private List<Bin> tabuSearch(List<Item> items, int binWidth, int binHeight) {
@@ -41,15 +41,15 @@ public class DriverTabu implements Metaheuristic {
             List<Move> neighbors = generateNeighbors(currentSolution);
             Move bestMove = null;
             int bestNeighborFitness = Integer.MAX_VALUE;
-            System.out.println("list neighbors: " + neighbors);
+//            System.out.println("list neighbors: " + neighbors);
             for (Move neighbor : neighbors) {
-                System.out.println(neighbor);
+//                System.out.println(neighbor);
                 if (!tabuList.contains(neighbor) || neighbor.fitness < bestFitness) {
                     int neighborFitness = calculateFitness(neighbor.solution);
-                    System.out.println("neighbor fitness: " + neighborFitness);
+//                    System.out.println("neighbor fitness: " + neighborFitness);
 
                     if (neighborFitness < bestNeighborFitness) {
-                        System.out.println("Iteration " + i + ", neighbor fitness: " + neighborFitness+ ", best neighbor fitness: " + bestNeighborFitness );
+//                        System.out.println("Iteration " + i + ", neighbor fitness: " + neighborFitness+ ", best neighbor fitness: " + bestNeighborFitness );
 
                         bestNeighborFitness = neighborFitness;
                         bestMove = neighbor;

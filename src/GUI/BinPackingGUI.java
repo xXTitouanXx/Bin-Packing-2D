@@ -32,7 +32,7 @@ public class BinPackingGUI extends JFrame {
         solver = new Solver(binPanel);
 
         this.dataSet = DataSetLoader.loadDataSet("src/data/" + controlPanel.getDataSetComboBox().getSelectedItem() + ".bp2d");
-        itemPanel = new ItemPanel(dataSet.getItems());
+        itemPanel = new ItemPanel(dataSet.getItems(), dataSet.getMaxWidth(), dataSet.getMaxHeight());
 
         add(controlPanel, BorderLayout.NORTH);
         add(itemPanel, BorderLayout.CENTER);

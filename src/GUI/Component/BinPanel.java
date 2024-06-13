@@ -22,8 +22,8 @@ public class BinPanel extends JPanel {
         int y = 5;
         if (bins != null) {
             for (Bin bin : bins) {
-                drawBin(g, bin, x, y);
-                if (x + bin.getWidth() < getParent().getSize().width) {
+                if (x + bin.getWidth() + 5 < getParent().getSize().width) {
+                    drawBin(g, bin, x, y);
                     x += bin.getWidth() + 5;
                 } else {
                     x = 5;

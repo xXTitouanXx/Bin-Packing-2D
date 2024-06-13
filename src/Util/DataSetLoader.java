@@ -28,6 +28,9 @@ public class DataSetLoader {
         int binHeight = 0;
         List<Item> items = new ArrayList<>();
 
+        int maxHeight = 0;
+        int maxWidth = 0;
+
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine().trim();
             if (line.startsWith("NAME:")) {
@@ -45,14 +48,15 @@ public class DataSetLoader {
                 for (int i = 0; i < nbItems; i++) {
                     String[] parts = scanner.nextLine().trim().split("\\s+");
                     int id = Integer.parseInt(parts[0]);
-                    int width = Integer.parseInt(parts[1]) /*/ 10*/;
-                    int height = Integer.parseInt(parts[2]) /*/ 10*/;
+                    int width = Integer.parseInt(parts[1]);
+                    int height = Integer.parseInt(parts[2]);
+                    maxWidth = Math.max(maxWidth, width);
+                    maxHeight = Math.max(maxHeight, height);
                     items.add(new Item(id, width, height));
                 }
             }
         }
-
         scanner.close();
-        return new DataSet(name, comment, nbItems, binWidth, binHeight, items);
+        return new DataSet(name, comment, nbItems, binWidth, binHeight, items, maxWidth, maxHeight);
     }
 }

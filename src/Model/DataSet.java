@@ -9,14 +9,18 @@ public class DataSet {
     private final int binWidth;
     private final int binHeight;
     private List<Item> items;
+    private int maxWidth;
+    private int maxHeight;
 
-    public DataSet(String name, String comment, int nbItems, int binWidth, int binHeight, List<Item> items) {
+    public DataSet(String name, String comment, int nbItems, int binWidth, int binHeight, List<Item> items, int maxWidth, int maxHeight) {
         this.name = name;
         this.comment = comment;
         this.nbItems = nbItems;
         this.binWidth = binWidth;
         this.binHeight = binHeight;
         this.items = items;
+        this.maxWidth = maxWidth;
+        this.maxHeight = maxHeight;
     }
 
     public String getName() {
@@ -58,4 +62,8 @@ public class DataSet {
     public void setItems(List<Item> items) {
         this.items = items;
     }
+
+    public int getMaxWidth() { return this.maxWidth; }
+
+    public int getMaxHeight() { return this.maxHeight; }
 }

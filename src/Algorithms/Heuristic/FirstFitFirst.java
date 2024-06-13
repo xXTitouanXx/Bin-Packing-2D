@@ -53,31 +53,31 @@ public class FirstFitFirst {
         List<Bin> bins = new ArrayList<>();
 
         for (Item item : items) {
-            System.out.println("ordre : " + item.getId());
+//            System.out.println("ordre : " + item.getId());
         }
         Bin currentBin = new Bin(binWidth, binHeight);
         bins.add(currentBin);
         for (Item item : items) {
-            System.out.println("ordre inté for : " + item.getId());
+//            System.out.println("ordre inté for : " + item.getId());
             boolean placed = false;
-            System.out.println("Find position : " + currentBin.findPositionForItem(item));
+//            System.out.println("Find position : " + currentBin.findPositionForItem(item));
             if (currentBin.findPositionForItem(item)) {
                 currentBin.addItem(item);
-                System.out.println("item ajouté");
+//                System.out.println("item ajouté");
                 placed = true;
             }
             if (!placed) {
                 Item rotatedItem = item.rotate();
                 if (currentBin.findPositionForItem(rotatedItem)) {
                     currentBin.addItem(rotatedItem);
-                    System.out.println("item rotate ajouté");
+//                    System.out.println("item rotate ajouté");
                     break;
                 }
             }
             if (!placed) {
                 currentBin = new Bin(binWidth, binHeight);
                 bins.add(currentBin);
-                System.out.println("item ajouté dans le bin");
+//                System.out.println("item ajouté dans le bin");
                 currentBin.addItem(item);
             }
         }

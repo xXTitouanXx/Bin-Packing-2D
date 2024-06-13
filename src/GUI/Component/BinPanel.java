@@ -56,11 +56,14 @@ public class BinPanel extends JPanel {
 
     public void clearBins() {
         bins.clear(); // Efface tous les items
-        repaint(); // Redessine le composant pour refléter les changements
     }
 
     public void setBins(List<Bin> bins) {
         this.bins = bins != null ? bins : new ArrayList<>();
         repaint();
+    }
+
+    public List<Bin> getBins() {
+        return bins;
     }
 }

@@ -17,7 +17,6 @@ public class Bin {
         return grid.length;
     }
 
-    // Méthode pour obtenir la hauteur de la grille
     public int getHeight() {
         return grid[0].length;
     }
@@ -117,7 +116,7 @@ public class Bin {
         if (x >= 0 && x < grid.length && y >= 0 && y < grid[0].length) {
             grid[x][y] = false;
         } else {
-            //System.out.println("Coordonnées de pixel non valides");
+            System.out.println("Coordonnées de pixel non valides");
         }
     }
 
@@ -125,7 +124,7 @@ public class Bin {
         if (x >= 0 && x < grid.length && y >= 0 && y < grid[0].length) {
             grid[x][y] = true;
         } else {
-            //System.out.println("Coordonnées de pixel non valides");
+            System.out.println("Coordonnées de pixel non valides");
         }
     }
 }

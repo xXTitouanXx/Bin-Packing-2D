@@ -1,24 +1,14 @@
 package GUI.Component;
 
-import GUI.BinPackingGUI;
-import Model.DataSet;
-import Util.DataSetLoader;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class ControlPanel extends JPanel {
     private JComboBox<String> dataSetComboBox;
     private JComboBox<String> metaheuristicComboBox;
-    private BinPackingGUI parent;
-    private ItemPanel itemPanel;
+    private JButton solveButton;
 
-    public ControlPanel(BinPackingGUI parent, ItemPanel itemPanel) {
-        this.parent = parent;
-        this.itemPanel = itemPanel;
-
+    public ControlPanel() {
         setBackground(new Color(63, 81, 181));
         setLayout(new FlowLayout());
 
@@ -29,45 +19,29 @@ public class ControlPanel extends JPanel {
                 "binpacking2d-10", "binpacking2d-11", "binpacking2d-12",
                 "binpacking2d-13"
         });
-        metaheuristicComboBox = new JComboBox<>(new String[]{"Tabu search", "Genetic Algorithm", "GRASP"});
-        JButton solveButton = new JButton("Solve");
+        add(new JLabel("Dataset:"));
+        add(dataSetComboBox);
+
+        metaheuristicComboBox = new JComboBox<>(new String[]{
+                "Tabu search",
+                "Genetic algorithm",
+                "GRASP",
+                "FFF",
+        });
+        add(new JLabel("Metaheuristic:"));
+        add(metaheuristicComboBox);
+
+        solveButton = new JButton("Solve");
         solveButton.setBackground(new Color(0, 150, 136));
         solveButton.setForeground(Color.WHITE);
-        add(new JLabel("Select Model.DataSet:"));
-        add(dataSetComboBox);
-        add(new JLabel("Select Algorithms.Metaheuristic.Metaheuristic:"));
-        add(metaheuristicComboBox);
         add(solveButton);
-
-        solveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String dataSetName = (String) dataSetComboBox.getSelectedItem();
-                String metaheuristicName = (String) metaheuristicComboBox.getSelectedItem();
-                itemPanel.clearItems();
-                revalidate();
-                repaint();
-                parent.solveBinPacking2D(dataSetName, metaheuristicName);
-            }
-        });
-        dataSetComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String dataSetName = (String) dataSetComboBox.getSelectedItem();
-//                String dataSetPath = "C:/Polytech_ingenieur/OptDiscrete/" + dataSetName + ".bp2d";
-                String dataSetPath = "E:/Polytech/4A/OptDiscrete/" + dataSetName + ".bp2d";
-                DataSet dataSet = DataSetLoader.loadDataSet(dataSetPath);
-                itemPanel.setItems(dataSet.getItems());
-                itemPanel.repaint();
-            }
-        });
     }
 
     public JComboBox<String> getDataSetComboBox() {
         return dataSetComboBox;
     }
 
-    public void setDataSetComboBox(JComboBox<String> dataSetComboBox) {
-        this.dataSetComboBox = dataSetComboBox;
-    }
+    public JComboBox<String> getMetaheuristicComboBox() { return metaheuristicComboBox; }
+
+    public JButton getSolveButton() { return solveButton; }
 }

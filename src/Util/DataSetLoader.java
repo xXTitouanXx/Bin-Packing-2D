@@ -43,8 +43,7 @@ public class DataSetLoader {
             } else if (line.equals("ITEMS [id width height]:")) {
                 // Commencer à lire les données des items
                 for (int i = 0; i < nbItems; i++) {
-                    String itemLine = scanner.nextLine().trim();
-                    String[] parts = itemLine.split("\\s+");
+                    String[] parts = scanner.nextLine().trim().split("\\s+");
                     int id = Integer.parseInt(parts[0]);
                     int width = Integer.parseInt(parts[1]) /*/ 10*/;
                     int height = Integer.parseInt(parts[2]) /*/ 10*/;

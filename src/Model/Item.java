@@ -96,7 +96,7 @@ public class Item {
             int temp = width;
             width = height;
             height = temp;
-            rotated = !rotated;
+            rotated = true;
         }
 
         return this;

@@ -5,7 +5,6 @@ import Algorithms.Metaheuristic.Metaheuristic;
 import Algorithms.Metaheuristic.TabuSearch.DriverTabu;
 import GUI.Component.BinPanel;
 import Model.DataSet;
-import Util.DataSetLoader;
 
 public class Solver {
     private BinPanel binPanel;
@@ -14,33 +13,18 @@ public class Solver {
         this.binPanel = binPanel;
     }
 
-    public void solve(String dataSetName, String metaheuristicName) {
-        // Load dataset
-        //String dataSetPath = "C:/Polytech_ingenieur/OptDiscrete/" + dataSetName + ".bp2d";
-        String dataSetPath = "E:/Polytech/4A/OptDiscrete/" + dataSetName + ".bp2d";
-        DataSet dataSet = DataSetLoader.loadDataSet(dataSetPath);
-
+    public void solve(DataSet dataSet, Metaheuristic metaheuristic) {
         if (dataSet != null) {
-            // Print dataset information
-            System.out.println("Loaded dataset: " + dataSet.getName());
-            System.out.println("Comment: " + dataSet.getComment());
-            System.out.println("Number of items: " + dataSet.getNbItems());
-            System.out.println("Bin width: " + dataSet.getBinWidth());
-            System.out.println("Bin height: " + dataSet.getBinHeight());
-
             // Solve bin packing with selected metaheuristic
-            Metaheuristic metaheuristic = getMetaheuristic(metaheuristicName);
             if (metaheuristic != null) {
                 metaheuristic.solveBinPacking2D(dataSet);
             } else {
-                System.out.println("Unknown metaheuristic: " + metaheuristicName);
+                System.out.println("Unknown metaheuristic");
             }
-        } else {
-            System.out.println("Failed to load dataset: " + dataSetPath);
         }
     }
 
-    private Metaheuristic getMetaheuristic(String metaheuristicName) {
+    public Metaheuristic getMetaheuristic(String metaheuristicName) {
         switch (metaheuristicName.toLowerCase()) {
             case "test":
                 return new Test(binPanel);
@@ -51,5 +35,13 @@ public class Solver {
             default:
                 return null;
         }
+    }
+
+    public BinPanel getBinPanel() {
+        return binPanel;
+    }
+
+    public void setBinPanel(BinPanel binPanel) {
+        this.binPanel = binPanel;
     }
 }

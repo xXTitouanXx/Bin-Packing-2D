@@ -29,7 +29,7 @@ public class ControlPanel extends JPanel {
                 "binpacking2d-10", "binpacking2d-11", "binpacking2d-12",
                 "binpacking2d-13"
         });
-        metaheuristicComboBox = new JComboBox<>(new String[]{"Tabu search", "GRASP", "FFF", "Tabu Search"});
+        metaheuristicComboBox = new JComboBox<>(new String[]{"Tabu search", "Genetic Algorithm", "GRASP"});
         JButton solveButton = new JButton("Solve");
         solveButton.setBackground(new Color(0, 150, 136));
         solveButton.setForeground(Color.WHITE);

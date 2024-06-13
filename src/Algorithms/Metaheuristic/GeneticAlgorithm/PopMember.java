@@ -49,6 +49,31 @@ public class PopMember {
             }
         }
 
-        fitness = bins.size();
+        // Calculer l'espace libre total
+        int totalFreeSpace = 0;
+        for (Bin b : bins) {
+            totalFreeSpace += calculateFreeSpace(b);
+        }
+
+        // Pondérer le nombre de bacs plus lourdement que l'espace libre
+        double binWeight = 10.0;  // Le coefficient de pondération pour le nombre de bins
+        double freeSpaceWeight = 1.0;  // Le coefficient de pondération pour l'espace libre
+
+        // Combiner le nombre de bacs et l'espace libre dans la fitness
+        fitness = (int) (binWeight * bins.size() + freeSpaceWeight * (totalFreeSpace / (binWidth * binHeight)));
+    }
+
+    // Méthode pour calculer l'espace libre dans un bin
+    private int calculateFreeSpace(Bin bin) {
+        boolean[][] grid = bin.getGrid();
+        int freeSpace = 0;
+        for (int x = 0; x < grid.length; x++) {
+            for (int y = 0; y < grid[0].length; y++) {
+                if (!grid[x][y]) {
+                    freeSpace++;
+                }
+            }
+        }
+        return freeSpace;
     }
 }

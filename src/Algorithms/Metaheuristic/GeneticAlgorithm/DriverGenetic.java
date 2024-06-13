@@ -2,10 +2,12 @@ package Algorithms.Metaheuristic.GeneticAlgorithm;
 
 import Algorithms.Metaheuristic.Metaheuristic;
 import GUI.Component.BinPanel;
+import Model.Bin;
 import Model.DataSet;
 import Model.Item;
 import Model.PopMember;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -24,16 +26,43 @@ public class DriverGenetic implements Metaheuristic {
         int generations = 100;
         double mutationRate = 0.1;
 
-        List<PopMember> population = initializePopulation(dataSet.getItems(), populationSize);
-        evaluatePopulation(population, dataSet.getBinWidth(), dataSet.getBinHeight());
+        final List<PopMember>[] population = new List[]{initializePopulation(dataSet.getItems(), populationSize)};
+        evaluatePopulation(population[0], dataSet.getBinWidth(), dataSet.getBinHeight());
 
-        for (int generation = 0; generation < generations; generation++) {
-            population = evolvePopulation(population, mutationRate, dataSet.getBinWidth(), dataSet.getBinHeight());
-        }
+        SwingWorker<Void, List<Bin>> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                for (int generation = 0; generation < generations; generation++) {
+                    population[0] = evolvePopulation(population[0], mutationRate, dataSet.getBinWidth(), dataSet.getBinHeight());
+                    PopMember bestSolution = findBestSolution(population[0]);
+                    publish(bestSolution.getBins());
 
-        PopMember bestSolution = findBestSolution(population);
-        binPanel.setBins(bestSolution.getBins());
-        binPanel.repaint();
+                    // Pause pour permettre l'affichage des étapes
+                    Thread.sleep(100);
+                }
+                return null;
+            }
+
+            @Override
+            protected void process(List<List<Bin>> chunks) {
+                List<Bin> latestBins = chunks.get(chunks.size() - 1);
+                binPanel.setBins(latestBins);
+                binPanel.repaint();
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    PopMember bestSolution = findBestSolution(population[0]);
+                    binPanel.setBins(bestSolution.getBins());
+                    binPanel.repaint();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        worker.execute();
     }
 
     private List<PopMember> initializePopulation(List<Item> items, int populationSize) {

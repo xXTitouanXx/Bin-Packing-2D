@@ -9,6 +9,7 @@ import Model.PopMember;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -22,7 +23,7 @@ public class DriverGenetic implements Metaheuristic {
 
     @Override
     public void solveBinPacking2D(DataSet dataSet) {
-        int populationSize = 10;
+        int populationSize = 50;
         int generations = 100;
         double mutationRate = 0.1;
 
@@ -83,7 +84,13 @@ public class DriverGenetic implements Metaheuristic {
 
     private List<PopMember> evolvePopulation(List<PopMember> population, double mutationRate, int binWidth, int binHeight) {
         List<PopMember> newPopulation = new ArrayList<>();
-        for (int i = 0; i < population.size(); i++) {
+        // Conserver les meilleurs individus (élitisme)
+        int elitismCount = 2;
+        population.sort(Comparator.comparingInt(PopMember::getFitness));
+        for (int i = 0; i < elitismCount; i++) {
+            newPopulation.add(population.get(i));
+        }
+        for (int i = elitismCount; i < population.size(); i++) {
             PopMember parent1 = selectParent(population);
             PopMember parent2 = selectParent(population);
             PopMember child = crossover(parent1, parent2, binWidth, binHeight);
@@ -94,12 +101,17 @@ public class DriverGenetic implements Metaheuristic {
     }
 
     private PopMember selectParent(List<PopMember> population) {
-        int tournamentSize = 5;
-        List<PopMember> tournament = new ArrayList<>();
-        for (int i = 0; i < tournamentSize; i++) {
-            tournament.add(population.get(random.nextInt(population.size())));
+        // Sélection par roulette
+        int totalFitness = population.stream().mapToInt(PopMember::getFitness).sum();
+        int rouletteSpin = random.nextInt(totalFitness);
+        int cumulativeFitness = 0;
+        for (PopMember member : population) {
+            cumulativeFitness += member.getFitness();
+            if (cumulativeFitness > rouletteSpin) {
+                return member;
+            }
         }
-        return findBestSolution(tournament);
+        return population.get(population.size() - 1); // Fallback
     }
 
     private PopMember crossover(PopMember parent1, PopMember parent2, int binWidth, int binHeight) {

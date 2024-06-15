@@ -130,4 +130,8 @@ public class Bin {
             System.out.println("Coordonnées de pixel non valides");
         }
     }
+
+    public boolean containsItem(Item item) {
+        return items.contains(item);
+    }
 }

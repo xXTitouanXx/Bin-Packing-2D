@@ -67,16 +67,21 @@ public class Bin {
     }
 
     public boolean tryAddItem(Item item) {
-        if (canFit(item, item.getX(), item.getY())) {
-            addItem(item);
-            return true;
+        for (int x = 0; x < getWidth(); x++) {
+            for (int y = 0; y < getHeight(); y++) {
+                if (canFit(item, x, y)) {
+                    item.setX(x);
+                    item.setY(y);
+                    addItem(item);
+                    return true;
+                }
+            }
         }
         return false;
     }
 
     public boolean canFit(Item item, int x, int y) {
         if (x + item.getWidth() > getWidth() || y + item.getHeight() > getHeight()) {
-            //System.out.println("item x : " + x + ", y :" + y + ", x+ width : " + (x + item.getWidth()) + ", y+height :" + (y + item.getHeight()) + ", value : " + (x + item.getWidth() > getWidth() || y + item.getHeight() > getHeight()));
             return false;
         }
         for (int i = x; i < x + item.getWidth(); i++) {
@@ -104,11 +109,9 @@ public class Bin {
 
     public boolean isPixelUsed(int x, int y) {
         if (x >= 0 && x < grid.length && y >= 0 && y < grid[0].length) {
-            //une case utilisé renvoie true
             return grid[x][y];
         } else {
-            // System.out.println("Coordonnées de pixel non valides");
-            return true; // Ou une autre valeur par défaut selon le contexte
+            return true;
         }
     }
 
@@ -126,5 +129,9 @@ public class Bin {
         } else {
             System.out.println("Coordonnées de pixel non valides");
         }
+    }
+
+    public boolean containsItem(Item item) {
+        return items.contains(item);
     }
 }

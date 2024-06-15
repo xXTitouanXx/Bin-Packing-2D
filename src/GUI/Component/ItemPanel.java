@@ -62,7 +62,6 @@ public class ItemPanel extends JPanel {
 
     private int calculateTotalHeightRequired(int panelWidth) {
         int x = 5;
-        int y = 5;
         int yMax = Integer.MIN_VALUE;
         int totalHeight = 0;
 

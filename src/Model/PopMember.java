@@ -28,14 +28,14 @@ public class PopMember {
 
     public void evaluate(double binWidth, double binHeight) {
         bins = new ArrayList<>();
-        Bin bin = new Bin((int) binWidth, (int) binHeight);
-        bins.add(bin);
-
+        Bin currentBin = new Bin((int) binWidth, (int) binHeight);
+        bins.add(currentBin);
+        int i = 0;
+        int bi = 1;
         for (Item item : order) {
             boolean placed = false;
             for (Bin b : bins) {
-                if (b.findPositionForItem(item)) {
-                    b.addItem(item);
+                if (b.tryAddItem(item)) {
                     placed = true;
                     break;
                 }
@@ -43,10 +43,12 @@ public class PopMember {
 
             if (!placed) {
                 Bin newBin = new Bin((int) binWidth, (int) binHeight);
-                newBin.findPositionForItem(item);
-                newBin.addItem(item);
+                bi += 1;
+                newBin.tryAddItem(item);
                 bins.add(newBin);
             }
+            i += 1;
+            System.out.println("item: " + i + ", item id: " + item.getId() + ", position: (" + item.getX() + ", " + item.getY() + ")" + ", bin: " + bi);
         }
 
         // Calculer l'espace libre total
@@ -56,11 +58,12 @@ public class PopMember {
         }
 
         // Pondérer le nombre de bacs plus lourdement que l'espace libre
-        double binWeight = 10.0;  // Le coefficient de pondération pour le nombre de bins
+        double binWeight = 100.0;  // Le coefficient de pondération pour le nombre de bins
         double freeSpaceWeight = 1.0;  // Le coefficient de pondération pour l'espace libre
 
         // Combiner le nombre de bacs et l'espace libre dans la fitness
-        fitness = (int) (binWeight * bins.size() + freeSpaceWeight * (totalFreeSpace / (binWidth * binHeight)));
+        fitness = (int) (binWeight * bins.size());
+        System.out.println("Fitness: " + fitness);
     }
 
     // Méthode pour calculer l'espace libre dans un bin
@@ -75,5 +78,13 @@ public class PopMember {
             }
         }
         return freeSpace;
+    }
+    public boolean containsItem(Item item) {
+        for (Item i : order) {
+            if (i.equals(item)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

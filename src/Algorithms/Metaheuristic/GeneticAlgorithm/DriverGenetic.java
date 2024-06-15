@@ -23,9 +23,9 @@ public class DriverGenetic implements Metaheuristic {
 
     @Override
     public void solveBinPacking2D(DataSet dataSet) {
-        int populationSize = 50;
-        int generations = 100;
-        double mutationRate = 0.1;
+        int populationSize = 10; // Taille de la population
+        int generations = 100; // Nombre de générations
+        double mutationRate = 0.1; // Taux de mutation
 
         final List<PopMember>[] population = new List[]{initializePopulation(dataSet.getItems(), populationSize)};
         evaluatePopulation(population[0], dataSet.getBinWidth(), dataSet.getBinHeight());
@@ -34,11 +34,19 @@ public class DriverGenetic implements Metaheuristic {
             @Override
             protected Void doInBackground() throws Exception {
                 for (int generation = 0; generation < generations; generation++) {
-                    population[0] = evolvePopulation(population[0], mutationRate, dataSet.getBinWidth(), dataSet.getBinHeight());
+                    List<PopMember> intermediateSolutions = selectIntermediateSolutions(population[0], populationSize / 3);
+                    population[0] = crossover(intermediateSolutions, populationSize, dataSet.getBinWidth(), dataSet.getBinHeight());
+
+                    for (PopMember member : population[0]) {
+                        mutate(member, mutationRate, dataSet.getBinWidth(), dataSet.getBinHeight());
+                    }
+
                     PopMember bestSolution = findBestSolution(population[0]);
                     publish(bestSolution.getBins());
 
-                    // Pause pour permettre l'affichage des étapes
+                    System.out.println("Generation: " + generation + " - Best Solution Fitness: " + bestSolution.getFitness());
+                    // Affichage des détails si nécessaire
+
                     Thread.sleep(100);
                 }
                 return null;
@@ -46,8 +54,7 @@ public class DriverGenetic implements Metaheuristic {
 
             @Override
             protected void process(List<List<Bin>> chunks) {
-                List<Bin> latestBins = chunks.get(chunks.size() - 1);
-                binPanel.setBins(latestBins);
+                binPanel.setBins(chunks.get(chunks.size() - 1));
                 binPanel.repaint();
             }
 
@@ -71,6 +78,11 @@ public class DriverGenetic implements Metaheuristic {
         for (int i = 0; i < populationSize; i++) {
             List<Item> shuffledItems = new ArrayList<>(items);
             java.util.Collections.shuffle(shuffledItems);
+            for (Item item : shuffledItems) {
+                if (random.nextBoolean()) {
+                    item.rotate();
+                }
+            }
             population.add(new PopMember(shuffledItems.toArray(new Item[0])));
         }
         return population;
@@ -82,86 +94,106 @@ public class DriverGenetic implements Metaheuristic {
         }
     }
 
-    private List<PopMember> evolvePopulation(List<PopMember> population, double mutationRate, int binWidth, int binHeight) {
-        List<PopMember> newPopulation = new ArrayList<>();
-        // Conserver les meilleurs individus (élitisme)
-        int elitismCount = 2;
+    private List<PopMember> selectIntermediateSolutions(List<PopMember> population, int numSelections) {
         population.sort(Comparator.comparingInt(PopMember::getFitness));
-        for (int i = 0; i < elitismCount; i++) {
-            newPopulation.add(population.get(i));
+
+        List<PopMember> intermediateSolutions = new ArrayList<>();
+        int totalFitness = population.stream().mapToInt(PopMember::getFitness).sum();
+
+        for (int i = 0; i < numSelections; i++) {
+            int rouletteSpin = random.nextInt(totalFitness);
+            int cumulativeFitness = 0;
+
+            for (PopMember member : population) {
+                cumulativeFitness += member.getFitness();
+                if (cumulativeFitness > rouletteSpin) {
+                    intermediateSolutions.add(member);
+                    break;
+                }
+            }
         }
-        for (int i = elitismCount; i < population.size(); i++) {
-            PopMember parent1 = selectParent(population);
-            PopMember parent2 = selectParent(population);
-            PopMember child = crossover(parent1, parent2, binWidth, binHeight);
-            mutate(child, mutationRate);
+        return intermediateSolutions;
+    }
+
+    private List<PopMember> crossover(List<PopMember> intermediateSolutions, int populationSize, int binWidth, int binHeight) {
+        List<PopMember> newPopulation = new ArrayList<>();
+
+        while (newPopulation.size() < populationSize) {
+            PopMember parent1 = intermediateSolutions.get(random.nextInt(intermediateSolutions.size()));
+            PopMember parent2 = intermediateSolutions.get(random.nextInt(intermediateSolutions.size()));
+
+            PopMember child = new PopMember(parent1.getOrder()); // Initialiser avec l'ordre du parent 1
+
+            for (Item item : parent2.getOrder()) {
+                if (!child.containsItem(item)) {
+                    Bin suitableBin = findSuitableBin(child, item, binWidth, binHeight);
+                    if (suitableBin != null) {
+                        suitableBin.addItem(item);
+                    } else {
+                        // Méthode d'ajout aléatoire si aucune bin convenable n'est trouvée
+                        addRandomly(child, item, binWidth, binHeight);
+                    }
+                }
+            }
+
+            child.evaluate(binWidth, binHeight);
             newPopulation.add(child);
         }
         return newPopulation;
     }
 
-    private PopMember selectParent(List<PopMember> population) {
-        // Sélection par roulette
-        int totalFitness = population.stream().mapToInt(PopMember::getFitness).sum();
-        int rouletteSpin = random.nextInt(totalFitness);
-        int cumulativeFitness = 0;
-        for (PopMember member : population) {
-            cumulativeFitness += member.getFitness();
-            if (cumulativeFitness > rouletteSpin) {
-                return member;
-            }
-        }
-        return population.get(population.size() - 1); // Fallback
-    }
-
-    private PopMember crossover(PopMember parent1, PopMember parent2, int binWidth, int binHeight) {
-        Item[] order1 = parent1.getOrder();
-        Item[] order2 = parent2.getOrder();
-        Item[] childOrder = new Item[order1.length];
-
-        int crossoverPoint = random.nextInt(order1.length);
-        for (int i = 0; i < crossoverPoint; i++) {
-            childOrder[i] = order1[i];
-        }
-        int index = crossoverPoint;
-        for (Item item : order2) {
-            if (!contains(childOrder, item)) {
-                childOrder[index++] = item;
-            }
-        }
-
-        PopMember child = new PopMember(childOrder);
-        child.evaluate(binWidth, binHeight);
-        return child;
-    }
-
-    private void mutate(PopMember member, double mutationRate) {
+    private void mutate(PopMember member, double mutationRate, int binWidth, int binHeight) {
         if (random.nextDouble() < mutationRate) {
-            int index1 = random.nextInt(member.getOrder().length);
-            int index2 = random.nextInt(member.getOrder().length);
-            Item temp = member.getOrder()[index1];
-            member.getOrder()[index1] = member.getOrder()[index2];
-            member.getOrder()[index2] = temp;
-            member.evaluate(member.getBins().get(0).getWidth(), member.getBins().get(0).getHeight());
+            int nb = geometricDistribution(mutationRate);
+
+            for (int i = 0; i < nb; i++) {
+                int index1 = random.nextInt(member.getOrder().length);
+                Item item = member.getOrder()[index1];
+                if (random.nextBoolean()) {
+                    item.rotate();
+                }
+
+                // Find a new random position for the item in the bins
+                int index2 = random.nextInt(member.getBins().size());
+                Bin bin = member.getBins().get(index2);
+                if (!canPlaceItem(item, bin, binWidth, binHeight)) {
+                    item.rotate(); // Revert rotation if placement failed
+                }
+            }
+            member.evaluate(binWidth, binHeight); // Réévaluer la fitness après mutation
         }
     }
 
-    private boolean contains(Item[] array, Item item) {
-        for (Item i : array) {
-            if (i != null && i.equals(item)) {
-                return true;
+
+    // Méthode pour une distribution géométrique
+    private int geometricDistribution(double p) {
+        return (int) Math.floor(Math.log(random.nextDouble()) / Math.log(1.0 - p));
+    }
+
+    // Vérifier si un article peut être placé dans un bac
+    private boolean canPlaceItem(Item item, Bin bin, int binWidth, int binHeight) {
+        // Implémentez vos conditions spécifiques ici, par exemple, vérifiez les dimensions restantes du bac
+        return bin.tryAddItem(item);
+    }
+
+    // Méthode pour trouver un bac adapté pour un article dans un membre de population
+    private Bin findSuitableBin(PopMember member, Item item, int binWidth, int binHeight) {
+        for (Bin bin : member.getBins()) {
+            if (bin.tryAddItem(item)) {
+                return bin;
             }
         }
-        return false;
+        return null;
+    }
+
+    // Méthode pour ajouter un article aléatoirement dans un membre de population
+    private void addRandomly(PopMember member, Item item, int binWidth, int binHeight) {
+        // Implémentez votre méthode d'ajout aléatoire ici
     }
 
     private PopMember findBestSolution(List<PopMember> population) {
-        PopMember bestSolution = population.get(0);
-        for (PopMember member : population) {
-            if (member.getFitness() < bestSolution.getFitness()) {
-                bestSolution = member;
-            }
-        }
-        return bestSolution;
+        return population.stream()
+                .min(Comparator.comparingInt(PopMember::getFitness))
+                .orElseThrow(() -> new IllegalArgumentException("Population is empty"));
     }
 }

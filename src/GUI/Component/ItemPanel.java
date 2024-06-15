@@ -39,20 +39,22 @@ public class ItemPanel extends JPanel {
             int itemHeight = (int) (item.getHeight() * scalingFactor);
             nb++;
 
+            // Check if x position exceeds panel width
             if (x + itemWidth + 5 > panelWidth) {
                 x = 5;
                 y += yMax + 5;
                 yMax = 0;
             }
 
-            // Check if the item can be drawn within the panel height
-            if (y + itemHeight + 5 <= panelHeight) {
-                drawItem(g, item, x, y, itemWidth, itemHeight);
-                yMax = Math.max(yMax, itemHeight);
-                x += itemWidth + 5;
-                i++;
-            } else {
-                // Break if we can't draw more items within the panel height
+            // Draw the item regardless of position check
+            drawItem(g, item, x, y, itemWidth, itemHeight);
+            yMax = Math.max(yMax, itemHeight);
+            x += itemWidth + 5;
+            i++;
+
+            // Optionally, you can break if panel height is exceeded,
+            // but this depends on your specific requirements
+            if (y + itemHeight + 5 > panelHeight) {
                 break;
             }
         }

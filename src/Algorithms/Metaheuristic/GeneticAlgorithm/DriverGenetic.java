@@ -26,9 +26,12 @@ public class DriverGenetic implements Metaheuristic {
     public void solveBinPacking2D(DataSet dataSet, ControlPanel controlPanel) {
         long startTime = System.currentTimeMillis();
 
-        int populationSize = 10; // Taille de la population
-        int generations = 100; // Nombre de générations
-        double mutationRate = 0.1; // Taux de mutation
+        int populationSize = 100; // Taille de la population
+        int generations = 50; // Nombre de générations
+        double mutationRate = 0.6; // Taux de mutation
+        int mutationSize = 2; // Nombre de bins détruits à chaque mutation
+        int tournamentRounds = 2; // Nombre de manches de tournoi
+        int selectionSize = 2; // Nombre d'individus selectionnés
 
         final List<PopMember>[] population = new List[]{initializePopulation(dataSet.getItems(), populationSize)};
         evaluatePopulation(population[0], dataSet.getBinWidth(), dataSet.getBinHeight());
@@ -39,11 +42,11 @@ public class DriverGenetic implements Metaheuristic {
                 for (int generation = 0; generation < generations; generation++) {
                     long generationStartTime = System.currentTimeMillis();
 
-                    List<PopMember> intermediateSolutions = selectIntermediateSolutions(population[0], populationSize / 3);
+                    List<PopMember> intermediateSolutions = selectIntermediateSolutions(population[0], selectionSize, tournamentRounds);
                     population[0] = crossover(intermediateSolutions, populationSize, dataSet.getBinWidth(), dataSet.getBinHeight());
 
                     for (PopMember member : population[0]) {
-                        mutate(member, mutationRate, dataSet.getBinWidth(), dataSet.getBinHeight());
+                        mutate(member, mutationRate, mutationSize);
                     }
 
                     PopMember bestSolution = findBestSolution(population[0]);
@@ -79,7 +82,6 @@ public class DriverGenetic implements Metaheuristic {
                 }
             }
         };
-
         worker.execute();
     }
 
@@ -104,12 +106,13 @@ public class DriverGenetic implements Metaheuristic {
         }
         long endTime = System.currentTimeMillis();
         long elapsedTime = endTime - startTime;
-        System.out.println("Time taken for initializePopulation(): " + elapsedTime + " ms");
+        System.out.println("Population initialized in: " + elapsedTime + " ms");
 
         return population;
     }
 
     private void evaluatePopulation(List<PopMember> population, int binWidth, int binHeight) {
+        // Place items in bins according to FirstFit logic without rotation (to start with more heterogeneous members)
         long startTime = System.currentTimeMillis();
 
         for (PopMember member : population) {
@@ -117,18 +120,14 @@ public class DriverGenetic implements Metaheuristic {
         }
         long endTime = System.currentTimeMillis();
         long elapsedTime = endTime - startTime;
-        System.out.println("Time taken for evaluatePopulation(): " + elapsedTime + " ms");
+        System.out.println("Population generated in: " + elapsedTime + " ms");
     }
 
-    private List<PopMember> selectIntermediateSolutions(List<PopMember> population, int numSelections) {
-        long startTime = System.currentTimeMillis();
-
+    private List<PopMember> selectIntermediateSolutions(List<PopMember> population, int numSelections, int tournamentRounds) {
         List<PopMember> intermediateSolutions = new ArrayList<>();
-        int tournamentSize = 5; // Taille du tournoi
-
         for (int i = 0; i < numSelections; i++) {
             PopMember best = null;
-            for (int j = 0; j < tournamentSize; j++) {
+            for (int j = 0; j < tournamentRounds; j++) {
                 PopMember candidate = population.get(random.nextInt(population.size()));
                 if (best == null || candidate.getFitness() < best.getFitness()) {
                     best = candidate;
@@ -136,10 +135,6 @@ public class DriverGenetic implements Metaheuristic {
             }
             intermediateSolutions.add(best);
         }
-        long endTime = System.currentTimeMillis();
-        long elapsedTime = endTime - startTime;
-        System.out.println("Time taken for selectIntermediateSolutions(): " + elapsedTime + " ms");
-
         return intermediateSolutions;
     }
 
@@ -175,49 +170,32 @@ public class DriverGenetic implements Metaheuristic {
         return newPopulation;
     }
 
-    private void mutate(PopMember member, double mutationRate, int binWidth, int binHeight) {
-        long startTime = System.currentTimeMillis();
-
+    private void mutate(PopMember member, double mutationRate, int mutationSize) {
+        // On supprime un certain nombre de bins avant de redistribuer les items de la même façon que crossover
+        List<Item> items = new ArrayList<>();
         if (random.nextDouble() < mutationRate) {
-            int nb = geometricDistribution(mutationRate);
-
-            for (int i = 0; i < nb; i++) {
-                int index1 = random.nextInt(member.getOrder().length);
-                Item item = member.getOrder()[index1];
-                if (random.nextBoolean()) {
-                    item.rotate();
-                }
-
-                int index2 = random.nextInt(member.getBins().size());
-                Bin bin = member.getBins().get(index2);
-                if (!canPlaceItem(item, bin, binWidth, binHeight)) {
-                    item.rotate(); // Revert rotation if placement failed
-                }
+            List<Bin> bins = member.getBins();
+            for (int i = 0; i < mutationSize; i++) {
+                // Suppression du ou des bin(s)
+                Bin bin = bins.get(random.nextInt(0, bins.size()));
+                items.addAll(bin.getItems());
+                bins.remove(bin);
             }
-            member.evaluate(binWidth, binHeight);
+            member.setBins(replace(bins, items));
             //hillClimb(member, binWidth, binHeight); // Appeler Hill Climbing après mutation
         }
-        long endTime = System.currentTimeMillis();
-        long elapsedTime = endTime - startTime;
-        System.out.println("Time taken for mutate(): " + elapsedTime + " ms");
+    }
+
+    private List<Bin> replace(List<Bin> bins, List<Item> items) {
+        for (Item item : items){
+            int itemArea = item.getWidth() * item.getHeight();
+            if (itemArea)
+        }
+        return bins;
     }
 
     private int geometricDistribution(double p) {
         return (int) Math.floor(Math.log(random.nextDouble()) / Math.log(1.0 - p));
-
-    }
-
-    private boolean canPlaceItem(Item item, Bin bin, int binWidth, int binHeight) {
-        return bin.tryAddItem(item);
-    }
-
-    private Bin findSuitableBin(PopMember member, Item item, int binWidth, int binHeight) {
-        for (Bin bin : member.getBins()) {
-            if (bin.tryAddItem(item)) {
-                return bin;
-            }
-        }
-        return null;
     }
 
     private void addRandomly(PopMember member, Item item, int binWidth, int binHeight) {

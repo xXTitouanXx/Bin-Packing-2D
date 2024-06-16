@@ -25,10 +25,6 @@ public class Bin {
         return grid;
     }
 
-    public void setGrid(boolean[][] grid) {
-        this.grid = grid;
-    }
-
     public List<Item> getItems() {
         return items;
     }
@@ -38,10 +34,6 @@ public class Bin {
     }
 
     // Methods
-    public boolean contains(Item item) {
-        return items.contains(item);
-    }
-
     public void addItem(Item item) {
         if (!items.contains(item)) {
             for (int x = item.getX(); x < item.getX() + item.getWidth(); x++) {
@@ -93,7 +85,7 @@ public class Bin {
         }
         return true;
     }
-    // ENLEVER
+
     public boolean findPositionForItem(Item item) {
         for (int x = 0; x < getWidth(); x++) {
             for (int y = 0; y < getHeight(); y++) {

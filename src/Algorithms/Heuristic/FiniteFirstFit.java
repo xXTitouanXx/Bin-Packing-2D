@@ -5,7 +5,6 @@ import Model.Bin;
 import Model.DataSet;
 import Model.Item;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +42,6 @@ public class FiniteFirstFit implements Heuristic {
                 currentBin.addItem(item);
             }
         }
-        // Finally, set the bins in BinPanel after all items are added
         binPanel.setBins(bins);
     }
 }

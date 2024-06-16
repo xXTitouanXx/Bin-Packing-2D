@@ -31,8 +31,8 @@ public class Item {
         this.color = other.color;
         this.rotated = other.rotated;
     }
-    // Getters et Setters
 
+    // Getters et Setters
     public int getId() {
         return id;
     }

@@ -21,7 +21,6 @@ public class BinPanel extends JPanel {
         int panelWidth = getParent().getSize().width;
         int panelHeight = getParent().getSize().height;
 
-        // Calculate the total height required
         int totalHeightRequired = calculateTotalHeightRequired(panelWidth);
 
         // Calculate scaling factor
@@ -32,21 +31,17 @@ public class BinPanel extends JPanel {
 
         int x = 5;
         int y = 5;
-        int i = 0;
-        int nb = 0;
+
         if (bins != null) {
             for (Bin bin : bins) {
-                nb++;
                 if (x + (int) (bin.getWidth() * scalingFactor) + 5 > panelWidth) {
                     x = 5;
                     y += (int) (bin.getHeight() * scalingFactor) + 5;
                 }
                 drawBin(g, bin, x, y, scalingFactor);
                 x += (int) (bin.getWidth() * scalingFactor) + 5;
-                i++;
                 if (y + (int) (bin.getHeight() * scalingFactor) + 5 > panelHeight) {
                     break;
-
                 }
             }
         }
@@ -58,27 +53,22 @@ public class BinPanel extends JPanel {
         int rowHeight = 0; // Hauteur maximale d'une ligne courante
 
         for (Bin bin : bins) {
-            int binWidth = (int) (bin.getWidth() + 5); // Largeur du bin avec espace
-            int binHeight = bin.getHeight() + 5; // Hauteur du bin avec espace
+            int binWidth = (bin.getWidth() + 5);
+            int binHeight = bin.getHeight() + 5;
 
             if (x + binWidth < panelWidth) {
-                // Ajouter le bin à la ligne courante
                 x += binWidth;
-                rowHeight = Math.max(rowHeight, binHeight); // Mettre à jour la hauteur maximale de la ligne
+                rowHeight = Math.max(rowHeight, binHeight);
             } else {
-                // Nouvelle ligne
-                x = 5; // Réinitialiser la position x
-                totalHeight += rowHeight; // Ajouter la hauteur de la ligne précédente
-                rowHeight = binHeight; // Commencer une nouvelle ligne
+                x = 5;
+                totalHeight += rowHeight;
+                rowHeight = binHeight;
             }
         }
-
-        // Ajouter la hauteur de la dernière ligne
         totalHeight += rowHeight;
 
         return totalHeight;
     }
-
 
     private void drawBin(Graphics g, Bin bin, int x, int y, double scalingFactor) {
         int scaledWidth = (int) (bin.getWidth() * scalingFactor);
@@ -110,13 +100,13 @@ public class BinPanel extends JPanel {
     }
 
     public void clearBins() {
-        bins.clear(); // Efface tous les bins
-        repaint(); // Redessine le composant pour refléter les changements
+        bins.clear();
+        repaint();
     }
 
     public void setBins(List<Bin> bins) {
         this.bins = bins != null ? bins : new ArrayList<>();
-        repaint(); // Redessine le composant pour refléter les changements
+        repaint();
     }
 
     public List<Bin> getBins() {

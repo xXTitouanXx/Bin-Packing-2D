@@ -44,13 +44,11 @@ public class NextFitDecreasingHeight implements Heuristic {
     }
 
     public static boolean tryAddItemWithRotation(Bin bin, Item item) {
-        // Essayer d'ajouter l'item sans rotation
         if (bin.tryAddItem(item)) {
             return true;
         }
         item.rotate();
         boolean added = bin.tryAddItem(item);
-        // Si l'item n'a pas été ajouté, on le remet dans son orientation originale
         if (!added) {
             item.rotate();
         }

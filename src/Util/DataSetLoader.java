@@ -41,7 +41,6 @@ public class DataSetLoader {
             } else if (line.startsWith("BIN_HEIGHT:")) {
                 binHeight = Integer.parseInt(line.substring(11).trim());
             } else if (line.equals("ITEMS [id width height]:")) {
-                // Commencer à lire les données des items
                 for (int i = 0; i < nbItems; i++) {
                     String[] parts = scanner.nextLine().trim().split("\\s+");
                     int id = Integer.parseInt(parts[0]);
@@ -51,7 +50,6 @@ public class DataSetLoader {
                 }
             }
         }
-
         scanner.close();
         return new DataSet(name, comment, nbItems, binWidth, binHeight, items);
     }

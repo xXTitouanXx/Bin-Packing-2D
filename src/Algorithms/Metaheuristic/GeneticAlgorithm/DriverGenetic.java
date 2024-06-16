@@ -79,7 +79,6 @@ public class DriverGenetic implements Metaheuristic {
                 }
             }
         };
-
         worker.execute();
     }
 
@@ -191,7 +190,7 @@ public class DriverGenetic implements Metaheuristic {
                 int index2 = random.nextInt(member.getBins().size());
                 Bin bin = member.getBins().get(index2);
                 if (!canPlaceItem(item, bin, binWidth, binHeight)) {
-                    item.rotate(); // Revert rotation if placement failed
+                    item.rotate();
                 }
             }
             member.evaluate(binWidth, binHeight);

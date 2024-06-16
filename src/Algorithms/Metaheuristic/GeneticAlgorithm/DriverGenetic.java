@@ -1,5 +1,7 @@
 package Algorithms.Metaheuristic.GeneticAlgorithm;
 
+import Algorithms.Heuristic.FiniteFirstFit;
+import Algorithms.Heuristic.FirstFitDecreasingArea;
 import Algorithms.Metaheuristic.Metaheuristic;
 import GUI.Component.BinPanel;
 import GUI.Component.ControlPanel;
@@ -28,7 +30,8 @@ public class DriverGenetic implements Metaheuristic {
 
         int populationSize = 10; // Taille de la population
         int generations = 100; // Nombre de générations
-        double mutationRate = 0.1; // Taux de mutation
+        double mutationRate = 0.5; // Taux de mutation
+        int mutationSize = 5; // Nombre d'items à muter par mutation
 
         final List<PopMember>[] population = new List[]{initializePopulation(dataSet.getItems(), populationSize)};
         evaluatePopulation(population[0], dataSet.getBinWidth(), dataSet.getBinHeight());
@@ -43,7 +46,7 @@ public class DriverGenetic implements Metaheuristic {
                     population[0] = crossover(intermediateSolutions, populationSize, dataSet.getBinWidth(), dataSet.getBinHeight());
 
                     for (PopMember member : population[0]) {
-                        mutate(member, mutationRate, dataSet.getBinWidth(), dataSet.getBinHeight());
+                        mutate(member, mutationRate, mutationSize, dataSet.getBinWidth(), dataSet.getBinHeight());
                     }
 
                     PopMember bestSolution = findBestSolution(population[0]);
@@ -174,40 +177,44 @@ public class DriverGenetic implements Metaheuristic {
         return newPopulation;
     }
 
-    private void mutate(PopMember member, double mutationRate, int binWidth, int binHeight) {
-        long startTime = System.currentTimeMillis();
+    private void mutate(PopMember member, double mutationRate, int mutationSize, int binWidth, int binHeight) {
+        List<Item> itemsToReplace = new ArrayList<>();
 
         if (random.nextDouble() < mutationRate) {
-            int nb = geometricDistribution(mutationRate);
+            for (int i = 0; i < mutationSize; i++) {
+                int index = random.nextInt(member.getBins().size());
+                Bin bin = member.getBins().get(index);
+                Item item = bin.getItems().get(random.nextInt(bin.getItems().size()));
+                bin.removeItem(item);
+                if (bin.getItems().isEmpty()) { member.getBins().remove(bin); }
+                itemsToReplace.add(item);
+            }
 
-            for (int i = 0; i < nb; i++) {
-                int index1 = random.nextInt(member.getOrder().length);
-                Item item = member.getOrder()[index1];
-                if (random.nextBoolean()) {
-                    item.rotate();
+            for (Item item : itemsToReplace){
+                boolean placed = false;
+                for (Bin currentBin : member.getBins()) {
+                    if (currentBin.findPositionForItem(item)) {
+                        currentBin.addItem(item);
+                        placed = true;
+                    }
+                    if (!placed) {
+                        Item rotatedItem = item.rotate();
+                        if (currentBin.findPositionForItem(rotatedItem)) {
+                            currentBin.addItem(rotatedItem);
+                            placed = true;
+                        }
+                    }
                 }
-
-                int index2 = random.nextInt(member.getBins().size());
-                Bin bin = member.getBins().get(index2);
-                if (!canPlaceItem(item, bin, binWidth, binHeight)) {
-                    item.rotate();
+                if (!placed) {
+                    Bin bin = new Bin(binWidth, binHeight);
+                    bin.addItem(item);
+                    member.getBins().add(new Bin(binWidth, binHeight));
                 }
             }
-            member.evaluate(binWidth, binHeight);
+            member.computeFitness();
+            System.out.println("Mutation intervened !");
             //hillClimb(member, binWidth, binHeight); // Appeler Hill Climbing après mutation
         }
-        long endTime = System.currentTimeMillis();
-        long elapsedTime = endTime - startTime;
-        System.out.println("Time taken for mutate(): " + elapsedTime + " ms");
-    }
-
-    private int geometricDistribution(double p) {
-        return (int) Math.floor(Math.log(random.nextDouble()) / Math.log(1.0 - p));
-
-    }
-
-    private boolean canPlaceItem(Item item, Bin bin, int binWidth, int binHeight) {
-        return bin.tryAddItem(item);
     }
 
     private Bin findSuitableBin(PopMember member, Item item, int binWidth, int binHeight) {

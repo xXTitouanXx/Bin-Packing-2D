@@ -44,7 +44,10 @@ public class PopMember {
                 bins.add(newBin);
             }
         }
+        fitness = computeFitness();
+    }
 
+    public double computeFitness(){
         double freeSpace;
         double occupiedSpace = 0;
         double ratioSpace;
@@ -62,7 +65,7 @@ public class PopMember {
         double binWeight = 100.0;
         double spaceWeight = 2.0; // Coefficient pour l'efficacité de placement
 
-        fitness = (binWeight * bins.size() + spaceWeight * totalRatioSpace);
+        return (binWeight * bins.size() + spaceWeight * totalRatioSpace);
     }
 
     private int calculateFreeSpace(Bin bin) {

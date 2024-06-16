@@ -91,14 +91,12 @@ public class Item {
 
     // Methods
     public Item rotate() {
-
         if (!rotated) {
             int temp = width;
             width = height;
             height = temp;
             rotated = true;
         }
-
         return this;
     }
 }

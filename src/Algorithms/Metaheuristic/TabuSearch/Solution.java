@@ -5,13 +5,12 @@ import Model.Bin;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Move {
-    List<Bin> solution;
-    int fitness;
+public class Solution {
+    public List<Bin> bins;
+    public int fitness;
 
-    // Constructeur pour initialiser une instance de Move avec une solution et son fitness
-    Move(List<Bin> solution, int fitness) {
-        this.solution = new ArrayList<>(solution);
+    Solution(List<Bin> bins, int fitness) {
+        this.bins = new ArrayList<>(bins);
         this.fitness = fitness;
     }
 
@@ -20,14 +19,14 @@ public class Move {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
 
-        Move move = (Move) obj;
+        Solution solution = (Solution) obj;
         // Comparer les solutions pour vérifier si elles sont identiques
-        return this.solution.equals(move.solution);
+        return this.bins.equals(solution.bins);
     }
 
     @Override
     public int hashCode() {
         // Générer un code de hachage basé sur la solution
-        return this.solution.hashCode();
+        return this.bins.hashCode();
     }
 }

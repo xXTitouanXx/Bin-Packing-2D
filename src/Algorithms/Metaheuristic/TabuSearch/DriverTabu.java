@@ -21,99 +21,92 @@ public class DriverTabu implements Metaheuristic {
         List<Item> items = dataSet.getItems();
         int binWidth = dataSet.getBinWidth() /*/ 10*/;
         int binHeight = dataSet.getBinHeight() /*/ 10*/;
-        binPanel.setBins(tabuSearch(items, binWidth, binHeight));
+        binPanel.setBins(tabuSearch(items, binWidth, binHeight, 1000, 50).bins);
         binPanel.repaint();
-//        System.out.println("Tabu search algorithm finished.");
     }
 
-    private List<Bin> tabuSearch(List<Item> items, int binWidth, int binHeight) {
-        int maxIterations = 1000;
-        int tabuListSize = 50;
-
+    private Solution tabuSearch(List<Item> items, int binWidth, int binHeight, int maxIterations, int tabuListSize) {
         FirstFitFirst fffAlgorithm = new FirstFitFirst();
-        List<Bin> currentSolution = fffAlgorithm.FFF(items, binWidth, binHeight);
-        List<Bin> bestSolution = new ArrayList<>(currentSolution);
-        int bestFitness = calculateFitness(bestSolution);
+        List<Bin> currentBins = fffAlgorithm.FFF(items, binWidth, binHeight);
+        Solution currentSolution = new Solution(currentBins, calculateFitness(currentBins));
+        Solution bestSolution = new Solution(currentSolution.bins, currentSolution.fitness);
 
-        List<Move> tabuList = new LinkedList<>();
+        List<Solution> tabuList = new LinkedList<>();
 
         for (int i = 0; i < maxIterations; i++) {
-            List<Move> neighbors = generateNeighbors(currentSolution);
-            Move bestMove = null;
+            List<Solution> neighbors = generateNeighbors(currentSolution);
+            Solution bestNeighbor = null;
             int bestNeighborFitness = Integer.MAX_VALUE;
-//            System.out.println("list neighbors: " + neighbors);
-            for (Move neighbor : neighbors) {
-//                System.out.println(neighbor);
-                if (!tabuList.contains(neighbor) || neighbor.fitness < bestFitness) {
-                    int neighborFitness = calculateFitness(neighbor.solution);
-//                    System.out.println("neighbor fitness: " + neighborFitness);
-
-                    if (neighborFitness < bestNeighborFitness) {
-//                        System.out.println("Iteration " + i + ", neighbor fitness: " + neighborFitness+ ", best neighbor fitness: " + bestNeighborFitness );
-
-                        bestNeighborFitness = neighborFitness;
-                        bestMove = neighbor;
-                    }
+            for (Solution neighbor : neighbors) {
+                if (!tabuList.contains(neighbor) && neighbor.fitness < bestNeighborFitness) {
+                    bestNeighborFitness = neighbor.fitness;
+                    bestNeighbor = new Solution(neighbor.bins, bestNeighborFitness);
                 }
             }
 
-            if (bestMove != null) {
-                currentSolution = bestMove.solution;
-                if (bestNeighborFitness < bestFitness) {
-                    bestFitness = bestNeighborFitness;
-                    bestSolution = new ArrayList<>(currentSolution);
-                }
-
-                tabuList.add(bestMove);
-                if (tabuList.size() > tabuListSize) {
-                    tabuList.remove(0); // Remove the oldest move
-                }
+            if (bestNeighbor == null) {
+                System.out.println("Early stop");
+                System.out.println(neighbors);
+                break;
             }
-            //System.out.println("Iteration " + i + ", best fitness: " + calculateFitness(currentSolution) + ", current bins: " + currentSolution.size() + ", best bins: " + bestSolution.size());
+
+            currentSolution = new Solution(bestNeighbor.bins, bestNeighbor.fitness);
+            tabuList.add(bestNeighbor);
+
+            if (tabuList.size() > tabuListSize) {
+                tabuList.removeFirst();
+            }
+
+            if (bestNeighbor.fitness < bestSolution.fitness) {
+                bestSolution = new Solution(bestNeighbor.bins, bestSolution.fitness);
+            }
         }
-
         return bestSolution;
     }
 
-    private List<Move> generateNeighbors(List<Bin> currentSolution) {
-        List<Move> neighbors = new ArrayList<>();
+    private List<Solution> generateNeighbors(Solution currentSolution) {
+        List<Solution> neighbors = new ArrayList<>();
+        List<Bin> bins = currentSolution.bins;
 
-        for (int i = 0; i < currentSolution.size(); i++) {
-            for (int j = i + 1; j < currentSolution.size(); j++) {
-                Bin bin1 = currentSolution.get(i);
-                Bin bin2 = currentSolution.get(j);
+        for (int i = 0; i < bins.size(); i++) {
+            for (int j = i + 1; j < bins.size(); j++) {
+                Bin bin1 = bins.get(i);
+                Bin bin2 = bins.get(j);
 
                 List<Item> items1 = new ArrayList<>(bin1.getItems());
                 List<Item> items2 = new ArrayList<>(bin2.getItems());
 
                 for (Item item1 : items1) {
                     for (Item item2 : items2) {
-                        // Essayer d'échanger item1 et item2
+                        // On essaie d'échanger item1 et item2
                         if (bin1.canFit(item2, item1.getX(), item1.getY()) && bin2.canFit(item1, item2.getX(), item2.getY())) {
                             // Créer une nouvelle solution avec l'échange
-                            List<Bin> newSolution = deepCopyBins(currentSolution);
+                            List<Bin> newSolution = deepCopyBins(bins);
                             Bin newBin1 = newSolution.get(i);
                             Bin newBin2 = newSolution.get(j);
 
                             newBin1.removeItem(item1);
                             newBin2.removeItem(item2);
 
+                            int tmpX = item1.getX();
+                            int tmpY = item1.getY();
+
                             item1.setX(item2.getX());
                             item1.setY(item2.getY());
-                            item2.setX(item1.getX());
-                            item2.setY(item1.getY());
+
+                            item2.setX(tmpX);
+                            item2.setY(tmpY);
 
                             newBin1.addItem(item2);
                             newBin2.addItem(item1);
 
                             int newFitness = calculateFitness(newSolution);
-                            neighbors.add(new Move(newSolution, newFitness));
+                            neighbors.add(new Solution(newSolution, newFitness));
                         }
                     }
                 }
             }
         }
-
         return neighbors;
     }
 
@@ -130,12 +123,13 @@ public class DriverTabu implements Metaheuristic {
         return newBins;
     }
 
-    private int calculateFitness(List<Bin> solution) {
+    private int calculateFitness(List<Bin> bins) {
         int binPenalty = 1000;
         int remainingSpacePenalty = 1;
-        int totalBinsUsed = solution.size();
+        int totalBinsUsed = bins.size();
         int totalRemainingSpace = 0;
-        for (Bin bin : solution) {
+
+        for (Bin bin : bins) {
             int binWidth = bin.getWidth();
             int binHeight = bin.getHeight();
             int usedSpace = 0;

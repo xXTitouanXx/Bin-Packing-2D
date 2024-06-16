@@ -1,5 +1,6 @@
 package GUI;
 
+import Algorithms.Heuristic.FirstFitFirst;
 import Algorithms.Metaheuristic.Metaheuristic;
 import Algorithms.Solver;
 import GUI.Component.BinPanel;
@@ -57,6 +58,16 @@ public class BinPackingGUI extends JFrame {
             solver.setBinPanel(binPanel);
             this.metaheuristic = solver.getMetaheuristic(controlPanel.getMetaheuristicComboBox().getSelectedItem().toString());
             this.solveBinPacking2D(dataSet, metaheuristic);
+        });
+
+        controlPanel.getGenerateSolutionButton().addActionListener(e -> {
+            binPanel.clearBins();
+            FirstFitFirst fff = new FirstFitFirst();
+            binPanel.setBins(fff.FFF(dataSet.getItems(), dataSet.getBinWidth(), dataSet.getBinHeight()));
+            itemPanel.setVisible(false);
+            add(binPanel);
+            revalidate();
+            repaint();
         });
     }
 

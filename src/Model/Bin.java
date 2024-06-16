@@ -1,15 +1,45 @@
 package Model;
 
+import org.w3c.dom.css.Rect;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Bin {
+    public class Rectangle{
+        int width;
+        int height;
+        int x;
+        int y;
+
+        Rectangle(int width, int height, int x, int y) {
+            this.width = width;
+            this.height = height;
+            this.x = x;
+            this.y = y;
+        }
+
+        boolean fitsIn(Rectangle other) {
+            return this.width <= other.width && this.height <= other.height;
+        }
+
+        Rectangle cutHorizontal(int cutHeight) {
+            return new Rectangle(this.width, cutHeight, this.x, this.y + this.height - cutHeight);
+        }
+
+        Rectangle cutVertical(int cutWidth) {
+            return new Rectangle(cutWidth, this.height, this.x + this.width - cutWidth, this.y);
+        }
+    }
     private boolean[][] grid;
     private List<Item> items;
+    private List<Rectangle> freeSpace;
 
     public Bin(int width, int height) {
         grid = new boolean[width][height];
         this.items = new ArrayList<>();
+        this.freeSpace = new ArrayList<>();
+        this.freeSpace.add(new Rectangle(width, height, 0, 0));
     }
 
     // Getters et Setters
@@ -43,13 +73,29 @@ public class Bin {
     }
 
     public void addItem(Item item) {
-        if (!items.contains(item)) {
-            for (int x = item.getX(); x < item.getX() + item.getWidth(); x++) {
-                for (int y = item.getY(); y < item.getY() + item.getHeight(); y++) {
-                    setPixelUsed(x, y);
+        for (Rectangle rectangle : freeSpace) {
+            if (!items.contains(item) && item.getWidth() < rectangle.width && item.getHeight() < rectangle.height) {
+                for (int x = item.getX(); x < item.getX() + item.getWidth(); x++) {
+                    for (int y = item.getY(); y < item.getY() + item.getHeight(); y++) {
+                        setPixelUsed(x, y);
+                    }
                 }
+                items.add(item);
+                Rectangle itemRect = new Rectangle(item.getWidth(), item.getHeight(), rectangle.x, rectangle.y);
+                splitFreeSpace(rectangle, itemRect);
             }
-            items.add(item);
+        }
+    }
+
+    private void splitFreeSpace(Rectangle rectangle, Rectangle itemRect) {
+        this.freeSpace.remove(rectangle);
+        Rectangle rightRectangle = rectangle.cutVertical(rectangle.width - itemRect.width);
+        Rectangle topRectangle = rectangle.cutHorizontal(rectangle.height - itemRect.height);
+        if (rightRectangle.width > 0 && rightRectangle.height > 0) {
+            this.freeSpace.add(rightRectangle);
+        }
+        if (topRectangle.width > 0 && topRectangle.height > 0) {
+            this.freeSpace.add(topRectangle);
         }
     }
 
@@ -66,17 +112,8 @@ public class Bin {
         }
     }
 
-    public boolean tryAddItem(Item item) {
-        if (canFit(item, item.getX(), item.getY())) {
-            addItem(item);
-            return true;
-        }
-        return false;
-    }
-
     public boolean canFit(Item item, int x, int y) {
         if (x + item.getWidth() > getWidth() || y + item.getHeight() > getHeight()) {
-            //System.out.println("item x : " + x + ", y :" + y + ", x+ width : " + (x + item.getWidth()) + ", y+height :" + (y + item.getHeight()) + ", value : " + (x + item.getWidth() > getWidth() || y + item.getHeight() > getHeight()));
             return false;
         }
         for (int i = x; i < x + item.getWidth(); i++) {

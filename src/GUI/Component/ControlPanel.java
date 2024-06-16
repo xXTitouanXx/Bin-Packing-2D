@@ -7,6 +7,7 @@ public class ControlPanel extends JPanel {
     private JComboBox<String> dataSetComboBox;
     private JComboBox<String> metaheuristicComboBox;
     private JButton solveButton;
+    private JButton generateSolutionButton;
 
     public ControlPanel() {
         setBackground(new Color(63, 81, 181));
@@ -21,6 +22,11 @@ public class ControlPanel extends JPanel {
         });
         add(new JLabel("Dataset:"));
         add(dataSetComboBox);
+
+        generateSolutionButton = new JButton("Generate Solution");
+        generateSolutionButton.setBackground(new Color(0, 150, 136));
+        generateSolutionButton.setForeground(Color.WHITE);
+        add(generateSolutionButton);
 
         metaheuristicComboBox = new JComboBox<>(new String[]{
                 "Tabu search",
@@ -44,4 +50,6 @@ public class ControlPanel extends JPanel {
     public JComboBox<String> getMetaheuristicComboBox() { return metaheuristicComboBox; }
 
     public JButton getSolveButton() { return solveButton; }
+
+    public JButton getGenerateSolutionButton() { return generateSolutionButton; }
 }

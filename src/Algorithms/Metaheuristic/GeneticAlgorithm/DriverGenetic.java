@@ -83,6 +83,11 @@ public class DriverGenetic implements Metaheuristic {
         worker.execute();
     }
 
+    @Override
+    public void setBinPanel(BinPanel binPanel) {
+        this.binPanel = binPanel;
+    }
+
     private List<PopMember> initializePopulation(List<Item> items, int populationSize) {
         long startTime = System.currentTimeMillis();
 

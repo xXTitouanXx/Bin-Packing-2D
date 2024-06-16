@@ -33,23 +33,18 @@ public class BinPanel extends JPanel {
         int x = 5;
         int y = 5;
         int i = 0;
-        int nb = 0;
-        if (bins != null) {
-            for (Bin bin : bins) {
-                nb++;
-                if (x + (int) (bin.getWidth() * scalingFactor) + 5 > panelWidth) {
-                    x = 5;
-                    y += (int) (bin.getHeight() * scalingFactor) + 5;
-                }
-                drawBin(g, bin, x, y, scalingFactor);
-                x += (int) (bin.getWidth() * scalingFactor) + 5;
-                i++;
-                if (y + (int) (bin.getHeight() * scalingFactor) + 5 > panelHeight) {
-                    break;
-
-                }
+        for (Bin bin : bins) {
+            if (x + (int) (bin.getWidth() * scalingFactor) + 5 > panelWidth) {
+                x = 5;
+                y += (int) (bin.getHeight() * scalingFactor) + 5;
             }
-            System.out.println("Nb bin dessiné: " + i + ", nb iteration dans la boucle bin: " + nb);
+            drawBin(g, bin, x, y, scalingFactor);
+            x += (int) (bin.getWidth() * scalingFactor) + 5;
+            i++;
+            if (y + (int) (bin.getHeight() * scalingFactor) + 5 > panelHeight) {
+                break;
+
+            }
         }
     }
 

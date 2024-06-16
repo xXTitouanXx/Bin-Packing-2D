@@ -40,7 +40,7 @@ public class ControlPanel extends JPanel {
 
         heuristicComboBox = new JComboBox<>(new String[]{
                 "Finite First Fit",
-                "First Fit Decreasing Height",
+                "First Fit Decreasing Area",
                 "Next Fit Decreasing Height",
         });
         add(new JLabel("Heuristic:"));

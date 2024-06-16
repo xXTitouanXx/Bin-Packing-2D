@@ -1,7 +1,6 @@
 package Algorithms.Heuristic;
 
 import GUI.Component.BinPanel;
-import GUI.Component.ControlPanel;
 import Model.Bin;
 import Model.DataSet;
 import Model.Item;
@@ -18,22 +17,19 @@ public class FiniteFirstFit implements Heuristic {
     }
 
     @Override
-    public void solveBinPacking2D(DataSet dataSet, ControlPanel controlPanel) {
+    public void solveBinPacking2D(DataSet dataSet) {
         int binWidth = dataSet.getBinWidth();
         int binHeight = dataSet.getBinHeight();
         List<Item> items = dataSet.getItems();
         List<Bin> bins = new ArrayList<>();
         Bin currentBin = new Bin(binWidth, binHeight);
         bins.add(currentBin);
-
         for (Item item : items) {
             boolean placed = false;
-
             if (currentBin.findPositionForItem(item)) {
                 currentBin.addItem(item);
                 placed = true;
             }
-
             if (!placed) {
                 Item rotatedItem = item.rotate();
                 if (currentBin.findPositionForItem(rotatedItem)) {
@@ -41,19 +37,13 @@ public class FiniteFirstFit implements Heuristic {
                     placed = true;
                 }
             }
-
             if (!placed) {
                 currentBin = new Bin(binWidth, binHeight);
                 bins.add(currentBin);
                 currentBin.addItem(item);
             }
-
-            // Update the bins in BinPanel after each item is added
-            binPanel.setBins(bins);
         }
-
         // Finally, set the bins in BinPanel after all items are added
         binPanel.setBins(bins);
-        controlPanel.enableButtons();
     }
 }

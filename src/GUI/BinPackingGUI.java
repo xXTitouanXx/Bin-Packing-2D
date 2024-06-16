@@ -20,7 +20,6 @@ public class BinPackingGUI extends JFrame {
     private DataSet dataSet;
     private Metaheuristic metaheuristic;
     private Heuristic heuristic;
-    private boolean isSolving;
 
     public BinPackingGUI() {
         setTitle("Bin Packing 2D Solver");
@@ -62,6 +61,7 @@ public class BinPackingGUI extends JFrame {
             this.metaheuristic = solver.getMetaheuristic(controlPanel.getMetaheuristicComboBox().getSelectedItem().toString());
             this.solveBinPacking2DWithMetaheuristic(dataSet, metaheuristic);
         });
+
         controlPanel.getSolveHeuristicButton().addActionListener(e -> {
             controlPanel.disableButtons();
             binPanel.clearBins();

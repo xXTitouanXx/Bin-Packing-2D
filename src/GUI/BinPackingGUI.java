@@ -79,6 +79,7 @@ public class BinPackingGUI extends JFrame {
                 add(binPanel);
                 revalidate();
                 repaint();
+                controlPanel.enableButtons();
             });
         }).start();
     }
@@ -91,6 +92,7 @@ public class BinPackingGUI extends JFrame {
                 add(binPanel);
                 revalidate();
                 repaint();
+                controlPanel.enableButtons();
             });
         }).start();
     }

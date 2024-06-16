@@ -1,7 +1,7 @@
-package Algorithms.Metaheuristic;
+package Algorithms.Heuristic;
 
 import Model.DataSet;
 
-public interface Metaheuristic {
+public interface Heuristic {
     void solveBinPacking2D(DataSet dataSet);
 }

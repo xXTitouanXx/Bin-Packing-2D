@@ -1,5 +1,6 @@
 package GUI;
 
+import Algorithms.Heuristic.Heuristic;
 import Algorithms.Metaheuristic.Metaheuristic;
 import Algorithms.Solver;
 import GUI.Component.BinPanel;
@@ -18,6 +19,8 @@ public class BinPackingGUI extends JFrame {
     private Solver solver;
     private DataSet dataSet;
     private Metaheuristic metaheuristic;
+    private Heuristic heuristic;
+    private boolean isSolving;
 
     public BinPackingGUI() {
         setTitle("Bin Packing 2D Solver");
@@ -26,7 +29,7 @@ public class BinPackingGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         setResizable(true);
-        
+
         binPanel = new BinPanel(null);
         controlPanel = new ControlPanel();
         solver = new Solver(binPanel);
@@ -52,22 +55,48 @@ public class BinPackingGUI extends JFrame {
             repaint();
         });
 
-        controlPanel.getSolveButton().addActionListener(e -> {
+        controlPanel.getSolveMetaheuristicButton().addActionListener(e -> {
+            controlPanel.disableButtons();
             binPanel.clearBins();
             solver.setBinPanel(binPanel);
             this.metaheuristic = solver.getMetaheuristic(controlPanel.getMetaheuristicComboBox().getSelectedItem().toString());
-            this.solveBinPacking2D(dataSet, metaheuristic);
+            this.solveBinPacking2DWithMetaheuristic(dataSet, metaheuristic);
+        });
+        controlPanel.getSolveHeuristicButton().addActionListener(e -> {
+            controlPanel.disableButtons();
+            binPanel.clearBins();
+            solver.setBinPanel(binPanel);
+            this.heuristic = solver.getHeuristic(controlPanel.getHeuristicComboBox().getSelectedItem().toString());
+            this.solveBinPacking2DWithHeuristic(dataSet, heuristic);
         });
     }
 
-    public void solveBinPacking2D(DataSet dataSet, Metaheuristic metaheuristic) {
-        solver.solve(dataSet, metaheuristic);
-        itemPanel.setVisible(false);
-        add(binPanel);
-        revalidate();
-        repaint();
+    public void solveBinPacking2DWithMetaheuristic(DataSet dataSet, Metaheuristic metaheuristic) {
+        new Thread(() -> {
+            solver.solveMetaheuristic(dataSet, metaheuristic);
+            SwingUtilities.invokeLater(() -> {
+                controlPanel.enableButtons();
+                System.out.println("issolve: " + isSolving);
+                itemPanel.setVisible(false);
+                add(binPanel);
+                revalidate();
+                repaint();
+            });
+        }).start();
     }
 
+    public void solveBinPacking2DWithHeuristic(DataSet dataSet, Heuristic heuristic) {
+        new Thread(() -> {
+            solver.solveHeuristic(dataSet, heuristic);
+            SwingUtilities.invokeLater(() -> {
+                controlPanel.enableButtons();
+                itemPanel.setVisible(false);
+                add(binPanel);
+                revalidate();
+                repaint();
+            });
+        }).start();
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {

@@ -27,7 +27,7 @@ public class DriverGenetic implements Metaheuristic {
 
         int populationSize = 10; // Taille de la population
         int generations = 100; // Nombre de générations
-        double mutationRate = 0.5; // Taux de mutation
+        double mutationRate = 0.1; // Taux de mutation
 
         final List<PopMember>[] population = new List[]{initializePopulation(dataSet.getItems(), populationSize)};
         evaluatePopulation(population[0], dataSet.getBinWidth(), dataSet.getBinHeight());
@@ -188,7 +188,7 @@ public class DriverGenetic implements Metaheuristic {
                 }
             }
             member.evaluate(binWidth, binHeight);
-            hillClimb(member, binWidth, binHeight); // Appeler Hill Climbing après mutation
+            //hillClimb(member, binWidth, binHeight); // Appeler Hill Climbing après mutation
         }
         long endTime = System.currentTimeMillis();
         long elapsedTime = endTime - startTime;
@@ -267,7 +267,6 @@ public class DriverGenetic implements Metaheuristic {
         }
         return -1; // Should never happen if item is in bins
     }
-
 }
 
 

@@ -1,5 +1,9 @@
 package Algorithms;
 
+import Algorithms.Heuristic.FiniteFirstFit;
+import Algorithms.Heuristic.FirstFitDecreasingHeight;
+import Algorithms.Heuristic.Heuristic;
+import Algorithms.Heuristic.NextFitDecreasingHeight;
 import Algorithms.Metaheuristic.GeneticAlgorithm.DriverGenetic;
 import Algorithms.Metaheuristic.Metaheuristic;
 import Algorithms.Metaheuristic.TabuSearch.DriverTabu;
@@ -13,13 +17,22 @@ public class Solver {
         this.binPanel = binPanel;
     }
 
-    public void solve(DataSet dataSet, Metaheuristic metaheuristic) {
+    public void solveMetaheuristic(DataSet dataSet, Metaheuristic metaheuristic) {
         if (dataSet != null) {
             // Solve bin packing with selected metaheuristic
             if (metaheuristic != null) {
                 metaheuristic.solveBinPacking2D(dataSet);
             } else {
                 System.out.println("Unknown metaheuristic");
+            }
+        }
+    }public void solveHeuristic(DataSet dataSet, Heuristic heuristic) {
+        if (dataSet != null) {
+            // Solve bin packing with selected metaheuristic
+            if (heuristic != null) {
+                heuristic.solveBinPacking2D(dataSet);
+            } else {
+                System.out.println("Unknown heuristic");
             }
         }
     }
@@ -32,6 +45,17 @@ public class Solver {
                 return new DriverTabu(binPanel);
             case "genetic algorithm":
                 return new DriverGenetic(binPanel);
+            default:
+                return null;
+        }
+    }public Heuristic getHeuristic(String heuristicName) {
+        switch (heuristicName.toLowerCase()) {
+            case "finite first fit":
+                return new FiniteFirstFit(binPanel);
+            case "first fit decreasing height":
+                return new FirstFitDecreasingHeight(binPanel);
+            case "next fit decreasing height":
+                return new NextFitDecreasingHeight(binPanel);
             default:
                 return null;
         }

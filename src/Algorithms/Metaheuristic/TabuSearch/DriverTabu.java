@@ -3,6 +3,7 @@ package Algorithms.Metaheuristic.TabuSearch;
 import Algorithms.Heuristic.FirstFitFirst;
 import Algorithms.Metaheuristic.Metaheuristic;
 import GUI.Component.BinPanel;
+import GUI.Component.ControlPanel;
 import Model.Bin;
 import Model.DataSet;
 import Model.Item;
@@ -17,7 +18,7 @@ public class DriverTabu implements Metaheuristic {
     }
 
     @Override
-    public void solveBinPacking2D(DataSet dataSet) {
+    public void solveBinPacking2D(DataSet dataSet, ControlPanel controlPanel) {
         List<Item> items = dataSet.getItems();
         int binWidth = dataSet.getBinWidth() /*/ 10*/;
         int binHeight = dataSet.getBinHeight() /*/ 10*/;

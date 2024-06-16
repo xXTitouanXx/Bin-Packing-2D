@@ -2,6 +2,7 @@ package Algorithms.Metaheuristic.GeneticAlgorithm;
 
 import Algorithms.Metaheuristic.Metaheuristic;
 import GUI.Component.BinPanel;
+import GUI.Component.ControlPanel;
 import Model.Bin;
 import Model.DataSet;
 import Model.Item;
@@ -22,7 +23,7 @@ public class DriverGenetic implements Metaheuristic {
     }
 
     @Override
-    public void solveBinPacking2D(DataSet dataSet) {
+    public void solveBinPacking2D(DataSet dataSet, ControlPanel controlPanel) {
         long startTime = System.currentTimeMillis();
 
         int populationSize = 10; // Taille de la population
@@ -68,7 +69,6 @@ public class DriverGenetic implements Metaheuristic {
                 try {
                     PopMember bestSolution = findBestSolution(population[0]);
                     binPanel.setBins(bestSolution.getBins());
-                    binPanel.repaint();
                     long totalTime = System.currentTimeMillis() - startTime;
                     System.out.println("Total elapsed time: " + totalTime + " ms");
                     System.out.println("Finished genetic algorithm with best solution of " + bestSolution.getBins().size() + " bins.");

@@ -58,8 +58,6 @@ public class ItemPanel extends JPanel {
                 break;
             }
         }
-
-        System.out.println("Nb Item dessiné: " + i + ", nb iteration dans la boucle item: " + nb);
     }
 
     private int calculateTotalHeightRequired(int panelWidth) {

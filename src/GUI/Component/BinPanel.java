@@ -49,7 +49,6 @@ public class BinPanel extends JPanel {
 
                 }
             }
-            System.out.println("Nb bin dessiné: " + i + ", nb iteration dans la boucle bin: " + nb);
         }
     }
 

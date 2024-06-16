@@ -1,6 +1,7 @@
 package Algorithms.Heuristic;
 
 import GUI.Component.BinPanel;
+import GUI.Component.ControlPanel;
 import Model.Bin;
 import Model.DataSet;
 import Model.Item;
@@ -18,7 +19,7 @@ public class NextFitDecreasingHeight implements Heuristic {
     }
 
     @Override
-    public void solveBinPacking2D(DataSet dataSet) {
+    public void solveBinPacking2D(DataSet dataSet, ControlPanel controlPanel) {
         List<Item> items = dataSet.getItems();
 
         // Tri des items par hauteur décroissante, en tenant compte de la rotation
@@ -50,6 +51,7 @@ public class NextFitDecreasingHeight implements Heuristic {
         // Affichage des résultats
         System.out.println("Nombre de conteneurs utilisés: " + bins.size());
         binPanel.setBins(bins);
+        controlPanel.enableButtons();
     }
 
     public static boolean tryAddItemWithRotation(Bin bin, Item item) {

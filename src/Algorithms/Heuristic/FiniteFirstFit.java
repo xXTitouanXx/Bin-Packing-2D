@@ -1,6 +1,7 @@
 package Algorithms.Heuristic;
 
 import GUI.Component.BinPanel;
+import GUI.Component.ControlPanel;
 import Model.Bin;
 import Model.DataSet;
 import Model.Item;
@@ -17,7 +18,7 @@ public class FiniteFirstFit implements Heuristic {
     }
 
     @Override
-    public void solveBinPacking2D(DataSet dataSet) {
+    public void solveBinPacking2D(DataSet dataSet, ControlPanel controlPanel) {
         int binWidth = dataSet.getBinWidth();
         int binHeight = dataSet.getBinHeight();
         List<Item> items = dataSet.getItems();
@@ -53,5 +54,6 @@ public class FiniteFirstFit implements Heuristic {
 
         // Finally, set the bins in BinPanel after all items are added
         binPanel.setBins(bins);
+        controlPanel.enableButtons();
     }
 }

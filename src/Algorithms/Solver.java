@@ -8,6 +8,7 @@ import Algorithms.Metaheuristic.GeneticAlgorithm.DriverGenetic;
 import Algorithms.Metaheuristic.Metaheuristic;
 import Algorithms.Metaheuristic.TabuSearch.DriverTabu;
 import GUI.Component.BinPanel;
+import GUI.Component.ControlPanel;
 import Model.DataSet;
 
 public class Solver {
@@ -17,20 +18,22 @@ public class Solver {
         this.binPanel = binPanel;
     }
 
-    public void solveMetaheuristic(DataSet dataSet, Metaheuristic metaheuristic) {
+    public void solveMetaheuristic(DataSet dataSet, Metaheuristic metaheuristic, ControlPanel controlPanel) {
         if (dataSet != null) {
             // Solve bin packing with selected metaheuristic
             if (metaheuristic != null) {
-                metaheuristic.solveBinPacking2D(dataSet);
+                metaheuristic.solveBinPacking2D(dataSet, controlPanel);
             } else {
                 System.out.println("Unknown metaheuristic");
             }
         }
-    }public void solveHeuristic(DataSet dataSet, Heuristic heuristic) {
+    }
+
+    public void solveHeuristic(DataSet dataSet, Heuristic heuristic, ControlPanel controlPanel) {
         if (dataSet != null) {
             // Solve bin packing with selected metaheuristic
             if (heuristic != null) {
-                heuristic.solveBinPacking2D(dataSet);
+                heuristic.solveBinPacking2D(dataSet, controlPanel);
             } else {
                 System.out.println("Unknown heuristic");
             }
@@ -39,8 +42,6 @@ public class Solver {
 
     public Metaheuristic getMetaheuristic(String metaheuristicName) {
         switch (metaheuristicName.toLowerCase()) {
-            case "test":
-                return new Test(binPanel);
             case "tabu search":
                 return new DriverTabu(binPanel);
             case "genetic algorithm":
@@ -48,7 +49,9 @@ public class Solver {
             default:
                 return null;
         }
-    }public Heuristic getHeuristic(String heuristicName) {
+    }
+
+    public Heuristic getHeuristic(String heuristicName) {
         switch (heuristicName.toLowerCase()) {
             case "finite first fit":
                 return new FiniteFirstFit(binPanel);

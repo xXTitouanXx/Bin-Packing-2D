@@ -73,10 +73,8 @@ public class BinPackingGUI extends JFrame {
 
     public void solveBinPacking2DWithMetaheuristic(DataSet dataSet, Metaheuristic metaheuristic) {
         new Thread(() -> {
-            solver.solveMetaheuristic(dataSet, metaheuristic);
+            solver.solveMetaheuristic(dataSet, metaheuristic, controlPanel);
             SwingUtilities.invokeLater(() -> {
-                controlPanel.enableButtons();
-                System.out.println("issolve: " + isSolving);
                 itemPanel.setVisible(false);
                 add(binPanel);
                 revalidate();
@@ -87,9 +85,8 @@ public class BinPackingGUI extends JFrame {
 
     public void solveBinPacking2DWithHeuristic(DataSet dataSet, Heuristic heuristic) {
         new Thread(() -> {
-            solver.solveHeuristic(dataSet, heuristic);
+            solver.solveHeuristic(dataSet, heuristic, controlPanel);
             SwingUtilities.invokeLater(() -> {
-                controlPanel.enableButtons();
                 itemPanel.setVisible(false);
                 add(binPanel);
                 revalidate();
